@@ -9,7 +9,8 @@ A Data Science capstone project focused on developing predictive demand forecast
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
-2. [Part A: Motivation for the Study](#part-a-motivation-for-the-study)
+2. [Motivation for the Study](#motivation-for-the-study)
+3. [Problem Statement](#problem-statement)
 
 ## Project Overview
 
@@ -17,7 +18,7 @@ This Capstone project focuses on STADIOalot and investigates how Data Science ca
 
 ---
 
-## Part A: Motivation for the Study
+## Motivation for the Study
 
 STADIOalot is a large South African e-commerce business with approximately 4.1 million active customers and 58 million orders annually. Despite generating approximately R38 billion in revenue, the organisation has an operating margin of only 1.9%, making operational efficiency critical to profitability. A key challenge is the increasing rate of product returns, which has risen from 11% to 15% overall and from 22% to 29% for apparel and shoes.
 
@@ -32,5 +33,13 @@ Therefore, this study seeks to generate evidence that may support predictive and
 
 ---
 
+## Problem Statement
+
+Despite STADIOalot's substantial annual order volume, the organisation is confronted with an escalating product return rate, currently standing at 15% overall and 29% for apparel and shoes, which places further pressure on its already thin 1.9% operating margin. Consequently, it remains analytically unclear whether historical transaction records, product catalogue attributes and customer behavioural signals can be systematically leveraged to predict the probability of a product return at the point of purchase. Although STADIOalot records extensive information about customers, orders, products, sellers and historical returns, potentially avoidable returns are currently identified primarily after the purchase has occurred. The briefing pack indicates that return behaviour is influenced by factors such as product characteristics, sellers, size-and-colour combinations and customer purchasing patterns, suggesting that return risk may be predictable before an order is completed.
+
+Therefore, this study aims to develop and evaluate a predictive machine learning classification model using STADIOalot's order, product catalogue and clickstream data to identify transactions at a high risk of return. The project will investigate which customer, product, seller, behavioural and transactional characteristics are associated with return risk and determine whether these characteristics can be used to produce reliable return-risk predictions. The intended outcome is to generate evidence that can support proactive, data-driven interventions, enabling STADIOalot to identify high-risk orders earlier, investigate appropriate preventative strategies and potentially reduce avoidable returns and their associated fulfilment and logistics costs.
+
+
+---
 
 
