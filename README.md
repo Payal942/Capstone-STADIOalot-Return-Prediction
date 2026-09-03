@@ -11,6 +11,8 @@ A Data Science capstone project focused on developing predictive demand forecast
 1. [Project Overview](#project-overview)
 2. [Motivation for the Study](#motivation-for-the-study)
 3. [Problem Statement](#problem-statement)
+4. [Data Request](#data-request)
+
 
 ## Project Overview
 
@@ -39,7 +41,26 @@ Despite STADIOalot's substantial annual order volume, the organisation is confro
 
 Therefore, this study aims to develop and evaluate a predictive machine learning classification model using STADIOalot's order, product catalogue and clickstream data to identify transactions at a high risk of return. The project will investigate which customer, product, seller, behavioural and transactional characteristics are associated with return risk and determine whether these characteristics can be used to produce reliable return-risk predictions. The intended outcome is to generate evidence that can support proactive, data-driven interventions, enabling STADIOalot to identify high-risk orders earlier, investigate appropriate preventative strategies and potentially reduce avoidable returns and their associated fulfilment and logistics costs.
 
-
 ---
 
+## Data Request
+
+The data request consists of eight related tables. Each table provides information required to understand factors associated with product returns and to develop predictive features for the machine learning models.
+
+| Table | Purpose |
+|---|---|
+| **Orders and Transactions** | Provides information about customer orders, products purchased, sellers, prices, promotions, payment methods and delivery options. This forms the core transactional data for the prediction model. |
+| **Returns** | Provides information about returned orders, including return reasons, returned quantities, refund outcomes and return costs. This table is primarily used to define the target variable (`Returned = 1/0`) and evaluate the model. |
+| **Product Catalogue** | Provides product characteristics such as category, subcategory, brand, size, colour, price, ratings and review information. These attributes can help identify products associated with higher return risk. |
+| **Marketplace Sellers** | Provides seller-related information such as seller ratings, tenure, shipping performance, late shipment rates and complaints. This can help determine whether seller characteristics are associated with product returns. |
+| **Customer Information** | Provides customer-level characteristics and historical purchasing information, including customer tenure, average order value, historical spending and previous returns. These variables can help identify customer-level return patterns. |
+| **Customer Behaviour** | Provides information about customer shopping activity, such as sessions, product views, add-to-basket activity, previous orders and previous returns. This can help identify behavioural patterns associated with return risk. |
+| **Inventory and Warehouse** | Provides information about stock availability, stock age, distribution centres and historical fulfilment performance. These variables can help investigate whether inventory and operational factors are associated with returns. |
+| **Delivery and Logistics** | Provides information about delivery options, delivery location, route distance and historical delivery performance. These variables can help assess whether logistics and delivery factors contribute to return risk. |
+
+The complete data request, including **column names, data types, examples and additional requirements**, is provided in the Part C Data Request document located in the `docs/` folder.
+
+**Data Request Document:** `docs/Part_C_Data_Request.pdf`
+
+---
 
