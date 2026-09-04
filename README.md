@@ -19,6 +19,7 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Assumptions](#assumptions)
    - [Issues](#issues)
    - [Decisions](#decisions)
+   - [Dependencies](#dependencies)
 
 ## Project Overview
 
@@ -214,3 +215,27 @@ At the proposal stage, several potential issues have been identified but cannot 
 
 ---
 
+## Dependencies
+
+| Dependency | Description | Relationship |
+|---|---|---|
+| **Client data access → Data profiling** | The required datasets must be supplied before data quality can be assessed. | Data profiling depends on receiving the client data. |
+| **Data profiling → Data cleaning** | Missing, inconsistent and invalid data must first be identified. | Cleaning actions depend on profiling results. |
+| **Data cleaning → Data integration** | Key identifiers and data-quality issues need to be understood before datasets are combined. | Reliable integration depends on appropriately prepared datasets. |
+| **Data integration → Feature engineering** | Predictive features may require information from multiple datasets. | Feature engineering depends on successful dataset integration. |
+| **Feature engineering → Exploratory analysis** | Predictive variables need to be constructed before their relationships with return status can be investigated. | Analysis depends on suitable features. |
+| **Exploratory analysis → Model development** | Initial data patterns and characteristics inform the modelling approach. | Modelling decisions depend on understanding the data. |
+| **Model development → Model evaluation** | Models must first be trained before predictive performance can be measured. | Evaluation depends on completed model training. |
+| **Model evaluation → Model selection** | The final model should be selected using evidence from comparative performance. | Model selection depends on evaluation results. |
+| **Model interpretation → Business recommendations** | Recommendations should be based on demonstrated predictive patterns and model findings. | Business recommendations depend on interpretable results. |
+| **Stakeholder validation → Final recommendations** | Business stakeholders need to confirm whether proposed interventions are operationally realistic. | Final recommendations depend on stakeholder feedback. |
+
+---
+
+## RAAIDD Summary
+
+The RAAIDD analysis demonstrates that the proposed project depends on more than simply developing a machine learning model. Reliable and appropriately structured data, careful prevention of data leakage, suitable feature engineering, comparative model evaluation and interpretation of results are all required to determine whether return prediction can provide meaningful business value.
+
+The RAAIDD log will be reviewed and updated throughout the project lifecycle as new information becomes available, particularly once the requested datasets have been received and assessed.
+
+---
