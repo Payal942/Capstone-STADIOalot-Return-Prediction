@@ -16,6 +16,7 @@ A Data Science capstone project focused on developing predictive demand forecast
 6. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
    - [Actions](#actions)
+   - [Assumptions](#assumptions)
 
 ## Project Overview
 
@@ -162,5 +163,21 @@ The RAAIDD log identifies the key **Risks, Actions, Assumptions, Issues, Decisio
 | **Evaluate models** | Assess accuracy, precision, recall, F1-score, ROC-AUC and confusion matrices. | A comprehensive understanding of model performance. |
 | **Interpret model results** | Identify variables and patterns associated with higher return risk. | Business insights that complement individual predictions. |
 | **Develop recommendations** | Translate findings into potential interventions for STADIOalot. | Evidence-based recommendations for proactive return management. |
+
+---
+
+## Assumptions
+
+| Assumption | Description | Why It Matters |
+|---|---|---|
+| **Historical returns are accurately recorded** | It is assumed that historical data correctly identifies returned and non-returned orders. | Incorrect target labels could significantly affect model training. |
+| **Orders can be linked across datasets** | It is assumed that consistent identifiers such as Order ID, Customer ID, SKU and Seller ID exist across relevant datasets. | Dataset integration depends on reliable identifiers. |
+| **Historical data is representative** | It is assumed that historical customer and product behaviour contains patterns relevant to future return behaviour. | The model depends on historical patterns being informative about future outcomes. |
+| **Sufficient historical data exists** | It is assumed that enough returned and non-returned orders are available to develop and evaluate a model. | A sufficiently large sample is required for reliable machine learning. |
+| **The prediction point can be established** | It is assumed that the business can identify the exact point at which a return-risk prediction would be generated. | This determines which variables can legitimately be used by the model. |
+| **Pre-order information is available** | It is assumed that relevant customer, product, seller and transaction information is available before order confirmation. | These variables form the basis of the prediction. |
+| **Customer behaviour contains predictive signals** | It is assumed that browsing, purchasing and previous-return behaviour contains information related to future returns. | If meaningful patterns do not exist, predictive performance may be limited. |
+| **Seller performance is relevant** | It is assumed that seller characteristics may contribute to return risk. | Seller-level information may help explain differences in return behaviour. |
+| **Data can be appropriately standardised** | It is assumed that inconsistent product categories and seller information can be cleaned sufficiently for analysis. | Poor standardisation could reduce the usefulness of product and seller features. |
 
 ---
