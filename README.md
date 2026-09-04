@@ -20,6 +20,7 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Issues](#issues)
    - [Decisions](#decisions)
    - [Dependencies](#dependencies)
+7. [Project Scope](#project-scope)
 
 ## Project Overview
 
@@ -237,5 +238,43 @@ At the proposal stage, several potential issues have been identified but cannot 
 The RAAIDD analysis demonstrates that the proposed project depends on more than simply developing a machine learning model. Reliable and appropriately structured data, careful prevention of data leakage, suitable feature engineering, comparative model evaluation and interpretation of results are all required to determine whether return prediction can provide meaningful business value.
 
 The RAAIDD log will be reviewed and updated throughout the project lifecycle as new information becomes available, particularly once the requested datasets have been received and assessed.
+
+---
+
+## Project Scope
+
+### In Scope
+
+The project will investigate whether Data Science and supervised machine learning methods can be used to predict the probability that an STADIOalot order will subsequently be returned.
+
+The project will focus on:
+
+- Collecting and understanding historical order and return data.
+- Analysing customer purchasing behaviour relevant to return risk.
+- Analysing product and category characteristics associated with returns.
+- Analysing seller-level characteristics and return patterns.
+- Investigating size-and-colour combinations where relevant to return behaviour.
+- Cleaning, integrating and preparing the required datasets.
+- Performing exploratory data analysis to identify patterns associated with returns.
+- Engineering features using information available at or before the point of order confirmation.
+- Developing supervised machine learning classification models.
+- Comparing model performance using appropriate evaluation metrics.
+- Identifying the factors that contribute most strongly to return risk.
+- Providing evidence-based recommendations that could support proactive return-management strategies.
+
+### Out of Scope
+
+The project will not:
+
+- Automatically cancel or modify customer orders.
+- Automatically prevent customers from purchasing high-risk products.
+- Implement a production machine learning system within STADIOalot's live e-commerce platform.
+- Make final business decisions on behalf of STADIOalot.
+- Determine whether an individual customer should be penalised because of their predicted return risk.
+- Use information that would only become available after the order or return has occurred as predictive input.
+- Guarantee that predicted high-risk orders will result in returns.
+- Attempt to eliminate all product returns, as some returns are unavoidable and may be legitimate.
+
+The project is intended to provide a predictive and decision-support capability rather than a fully automated operational solution.
 
 ---
