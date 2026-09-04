@@ -18,6 +18,7 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Actions](#actions)
    - [Assumptions](#assumptions)
    - [Issues](#issues)
+   - [Decisions](#decisions)
 
 ## Project Overview
 
@@ -194,6 +195,22 @@ At the proposal stage, several potential issues have been identified but cannot 
 | **Unreliable seller-supplied fields** | Some marketplace seller information may not be sufficiently reliable for modelling. | Data-quality checks will determine which fields are suitable. |
 | **Unknown feature availability** | It is not yet confirmed which variables are consistently available at the exact point of purchase. | The data request and stakeholder discussions will establish feature availability. |
 | **Unknown model performance** | It is not yet known whether the available data will provide sufficient predictive power. | Baseline and comparative modelling will be used to assess feasibility. |
+
+---
+
+## Decisions
+
+| Decision | Rationale |
+|---|---|
+| **Focus the project on customer-return prediction** | Returns represent a significant business challenge and are a priority within STADIOalot's strategic objectives. |
+| **Use return status as the primary target variable** | The business objective is to identify whether an order is likely to result in a return. |
+| **Predict at or before order confirmation** | This ensures that the project addresses the problem proactively rather than simply explaining returns after they occur. |
+| **Use supervised machine learning** | Historical orders can be labelled according to whether they were subsequently returned, making this suitable for a classification problem. |
+| **Exclude post-order information from predictive features** | Post-order variables would create data leakage and would not be available when the prediction is required. |
+| **Compare multiple classification models** | Comparing models provides stronger evidence than relying on a single modelling approach. |
+| **Use multiple evaluation metrics** | Return prediction requires consideration of the model's ability to identify actual returns, so accuracy alone is insufficient. |
+| **Prioritise interpretability alongside predictive performance** | STADIOalot needs to understand factors associated with return risk so that predictions can potentially inform business interventions. |
+| **Treat the model as decision support** | Predictions should provide evidence to support business decisions rather than automatically determine how every high-risk order is handled. |
 
 ---
 
