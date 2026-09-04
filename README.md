@@ -15,7 +15,7 @@ A Data Science capstone project focused on developing predictive demand forecast
 5. [Repository Structure](#repository-structure)
 6. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
-
+   - [Actions](#actions)
 
 ## Project Overview
 
@@ -142,5 +142,25 @@ The RAAIDD log identifies the key **Risks, Actions, Assumptions, Issues, Decisio
 | **Concept drift** | Customer purchasing behaviour, product trends and seller performance may change over time. | A model trained on older data may become less accurate when applied to newer orders. | Use time-aware validation where appropriate and monitor performance across different periods. |
 | **High data volume** | STADIOalot processes approximately 58 million orders per year and maintains extensive behavioural and product data. | Large datasets may increase processing time and computational requirements. | Determine an appropriate modelling sample, optimise data processing and document sampling decisions. |
 | **Privacy and data governance** | Customer-level behavioural data may contain personally identifiable information that is not necessary for modelling. | Inappropriate use of personal information could create privacy and governance concerns. | Request only data necessary for the project, minimise personally identifiable information and follow applicable data-governance requirements. |
+
+---
+
+## Actions
+
+| Action | Description | Expected Outcome |
+|---|---|---|
+| **Define prediction target** | Define the return status of an order as the target variable indicating whether the order is subsequently returned. | A clear and measurable classification target. |
+| **Define prediction point** | Establish that predictions must use information available at or before order confirmation. | A realistic modelling scenario and reduced risk of data leakage. |
+| **Request required data** | Request order, product, customer-behaviour, seller and historical returns data from the client. | Sufficient data to investigate the return-prediction problem. |
+| **Profile the data** | Assess data types, missing values, duplicates, outliers, inconsistent categories and identifier quality. | A clear understanding of data quality and preprocessing requirements. |
+| **Integrate datasets** | Join relevant datasets using identifiers such as Order ID, Customer ID, SKU and Seller ID. | An integrated analytical dataset suitable for modelling. |
+| **Clean the data** | Address missing, inconsistent, duplicated and invalid records. | A reliable dataset for analysis and modelling. |
+| **Engineer features** | Create pre-order variables such as historical customer return rate, product return rate and seller performance indicators. | Predictive variables that represent return-risk patterns. |
+| **Conduct exploratory analysis** | Investigate relationships between return behaviour and customer, product, seller and transaction characteristics. | Identification of potentially important predictive patterns. |
+| **Develop baseline model** | Establish a simple classification model against which more advanced models can be compared. | A benchmark for evaluating model improvements. |
+| **Develop and compare models** | Train multiple suitable supervised classification models. | Evidence of which modelling approach provides the most useful predictions. |
+| **Evaluate models** | Assess accuracy, precision, recall, F1-score, ROC-AUC and confusion matrices. | A comprehensive understanding of model performance. |
+| **Interpret model results** | Identify variables and patterns associated with higher return risk. | Business insights that complement individual predictions. |
+| **Develop recommendations** | Translate findings into potential interventions for STADIOalot. | Evidence-based recommendations for proactive return management. |
 
 ---
