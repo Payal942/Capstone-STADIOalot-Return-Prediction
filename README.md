@@ -12,7 +12,7 @@ A Data Science capstone project focused on developing predictive demand forecast
 2. [Motivation for the Study](#motivation-for-the-study)
 3. [Problem Statement](#problem-statement)
 4. [Data Request](#data-request)
-
+5. [Repository Structure](#repository-structure)
 
 ## Project Overview
 
@@ -64,3 +64,61 @@ The complete data request, including **column names, data types, examples and ad
 
 ---
 
+## Repository Structure
+
+The GitHub repository is organised to clearly separate datasets, models, experimental configuration and results, statistical analysis, visualisations, notebooks, scripts and supporting documentation. This structure supports reproducibility and makes it easy to locate the different artefacts produced throughout the project.
+
+
+```text
+STADIOalot-Return-Prediction/
+│
+├── data/
+│   ├── raw/
+│   │   └── README.md
+│   └── processed/
+│       └── README.md
+│
+├── models/
+│   └── README.md
+│
+├── experimental_setup/
+│   ├── README.md
+│   ├── requirements.txt
+│   └── configuration.md
+│
+├── experimental_results/
+│   └── README.md
+│
+├── statistical_helpers/
+│   └── README.md
+│
+├── visualisations/
+│   └── README.md
+│
+├── notebooks/
+│   └── README.md
+│
+├── scripts/
+│   └── README.md
+│
+└── docs/
+    ├── README.md
+    └── Data_Request.pdf
+```
+    
+## Repository Structure
+
+| Folder | What goes there |
+|---|---|
+| `data/raw/` | Stores original datasets received from the client. Raw data is kept unchanged to preserve the original source data.|
+| `data/processed/` | Stores cleaned, transformed and prepared datasets used for analysis and model development.|
+| `models/` | Stores trained machine learning models, model artefacts and related files.|
+| `experimental_setup/` | Contains the project environment and experimental configuration, including requirements.txt and configuration documentation. |
+| `experimental_results/` | Stores model evaluation results, performance metrics, experiment outputs and related findings. |
+| `statistical_helpers/` | Contains statistical helper functions, statistical tests and scripts used to support model analysis and comparison. |
+| `visualisations/` | Contains visualisation scripts and generated graphs, charts and other visual outputs used for exploratory analysis and model evaluation.|
+| `notebooks/` | Contains Jupyter notebooks used for exploratory data analysis, preprocessing, feature engineering, modelling and evaluation. |
+| `scripts/` | Contains reusable Python scripts used for data processing, modelling, evaluation and other project tasks. |
+| `docs/` | Contains supporting project documentation. |
+
+---
