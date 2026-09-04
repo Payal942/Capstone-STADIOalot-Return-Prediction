@@ -17,6 +17,7 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Risks](#risks)
    - [Actions](#actions)
    - [Assumptions](#assumptions)
+   - [Issues](#issues)
 
 ## Project Overview
 
@@ -181,3 +182,18 @@ The RAAIDD log identifies the key **Risks, Actions, Assumptions, Issues, Decisio
 | **Data can be appropriately standardised** | It is assumed that inconsistent product categories and seller information can be cleaned sufficiently for analysis. | Poor standardisation could reduce the usefulness of product and seller features. |
 
 ---
+
+## Issues
+
+At the proposal stage, several potential issues have been identified but cannot yet be confirmed until the requested data is received and assessed.
+
+| Issue | Description | Current Status / Proposed Response |
+|---|---|---|
+| **Data fragmentation** | Browsing, ordering, warehouse, delivery and returns data may exist across separate systems and may not be fully integrated. | To be investigated during data integration and profiling. |
+| **Inconsistent product categorisation** | Product categories may be inconsistent across STADIOalot's large product catalogue. | To be assessed during data cleaning and standardisation. |
+| **Unreliable seller-supplied fields** | Some marketplace seller information may not be sufficiently reliable for modelling. | Data-quality checks will determine which fields are suitable. |
+| **Unknown feature availability** | It is not yet confirmed which variables are consistently available at the exact point of purchase. | The data request and stakeholder discussions will establish feature availability. |
+| **Unknown model performance** | It is not yet known whether the available data will provide sufficient predictive power. | Baseline and comparative modelling will be used to assess feasibility. |
+
+---
+
