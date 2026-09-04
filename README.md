@@ -13,6 +13,9 @@ A Data Science capstone project focused on developing predictive demand forecast
 3. [Problem Statement](#problem-statement)
 4. [Data Request](#data-request)
 5. [Repository Structure](#repository-structure)
+6. [RAAIDD Log](#raaidd-log)
+   - [Risks](#risks)
+
 
 ## Project Overview
 
@@ -120,5 +123,24 @@ STADIOalot-Return-Prediction/
 | `notebooks/` | Contains Jupyter notebooks used for exploratory data analysis, preprocessing, feature engineering, modelling and evaluation. |
 | `scripts/` | Contains reusable Python scripts used for data processing, modelling, evaluation and other project tasks. |
 | `docs/` | Contains supporting project documentation. |
+
+---
+
+## RAAIDD Log
+
+The RAAIDD log identifies the key **Risks, Actions, Assumptions, Issues, Decisions and Dependencies** associated with the proposed STADIOalot customer-return prediction project. Each entry is specifically linked to the objective of using Data Science to predict the probability that an order will be returned before the order is confirmed.
+
+## Risks
+
+| Risk | Description | Potential Impact | Mitigation |
+|---|---|---|---|
+| **Data leakage** | Information that becomes available only after an order is placed, such as return outcomes, refund information or post-delivery behaviour, may accidentally be included as predictive features. | The model could appear highly accurate during testing but fail to perform realistically on new orders. | Define the prediction point as the point of order confirmation and conduct a feature-by-feature leakage review before model training. |
+| **Inconsistent product data** | STADIOalot has approximately 38 million SKUs and the briefing pack identifies inconsistent product categorisation. | Incorrect or inconsistent categories could reduce model quality and make product-level patterns difficult to interpret. | Profile product data, standardise relevant categories and document all transformations during preprocessing. |
+| **Unreliable seller information** | Some seller-supplied fields are identified as unreliable in the briefing pack. | Poor-quality seller information could introduce noise or bias into the model. | Assess seller-data completeness and reliability and exclude or transform variables that do not meet defined quality standards. |
+| **Class imbalance** | Returned orders may represent a smaller proportion of total orders than non-returned orders. | A model could achieve high accuracy while performing poorly when identifying actual returns. | Evaluate the target distribution and use precision, recall, F1-score and ROC-AUC in addition to accuracy. |
+| **Insufficient predictive performance** | Customer, product and seller characteristics may not provide enough information to reliably predict individual returns. | The model may not provide sufficient value for operational decision-making. | Establish a baseline model and compare multiple suitable classification approaches. |
+| **Concept drift** | Customer purchasing behaviour, product trends and seller performance may change over time. | A model trained on older data may become less accurate when applied to newer orders. | Use time-aware validation where appropriate and monitor performance across different periods. |
+| **High data volume** | STADIOalot processes approximately 58 million orders per year and maintains extensive behavioural and product data. | Large datasets may increase processing time and computational requirements. | Determine an appropriate modelling sample, optimise data processing and document sampling decisions. |
+| **Privacy and data governance** | Customer-level behavioural data may contain personally identifiable information that is not necessary for modelling. | Inappropriate use of personal information could create privacy and governance concerns. | Request only data necessary for the project, minimise personally identifiable information and follow applicable data-governance requirements. |
 
 ---
