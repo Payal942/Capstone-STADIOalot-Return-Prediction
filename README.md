@@ -20,7 +20,7 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Issues](#issues)
    - [Decisions](#decisions)
    - [Dependencies](#dependencies)
-7. [Project Scope](#project-scope)
+
 
 ## Project Overview
 
@@ -66,9 +66,9 @@ The data request consists of eight related tables. Each table provides informati
 | **Inventory and Warehouse** | Provides information about stock availability, stock age, distribution centres and historical fulfilment performance. These variables can help investigate whether inventory and operational factors are associated with returns. |
 | **Delivery and Logistics** | Provides information about delivery options, delivery location, route distance and historical delivery performance. These variables can help assess whether logistics and delivery factors contribute to return risk. |
 
-The complete data request, including **column names, data types, examples and additional requirements**, is provided in the Part C Data Request document located in the `docs/` folder.
+The complete data request, including **column names, data types, examples and additional requirements**, is provided in the Data Request document located in the `docs/` folder.
 
-**Data Request Document:** `docs/Part_C_Data_Request.pdf`
+**Data Request Document:** `docs/Data_Request.pdf`
 
 ---
 
@@ -139,7 +139,7 @@ The RAAIDD log identifies the key **Risks, Actions, Assumptions, Issues, Decisio
 
 | Risk | Description | Potential Impact | Mitigation |
 |---|---|---|---|
-| **Data leakage** | Information that becomes available only after an order is placed, such as return outcomes, refund information or post-delivery behaviour, may accidentally be included as predictive features. | The model could appear highly accurate during testing but fail to perform realistically on new orders. | Define the prediction point as the point of order confirmation and conduct a feature-by-feature leakage review before model training. |
+| **Data leakage** | Information that becomes available only after an order is placed, such as return outcomes, refund information or post-delivery behaviour, may accidentally be included as predictive features. | The model could appear highly accurate during testing and fail to perform realistically on new orders. | Define the prediction point as the point of order confirmation and conduct a feature-by-feature leakage review before model training. |
 | **Inconsistent product data** | STADIOalot has approximately 38 million SKUs and the briefing pack identifies inconsistent product categorisation. | Incorrect or inconsistent categories could reduce model quality and make product-level patterns difficult to interpret. | Profile product data, standardise relevant categories and document all transformations during preprocessing. |
 | **Unreliable seller information** | Some seller-supplied fields are identified as unreliable in the briefing pack. | Poor-quality seller information could introduce noise or bias into the model. | Assess seller-data completeness and reliability and exclude or transform variables that do not meet defined quality standards. |
 | **Class imbalance** | Returned orders may represent a smaller proportion of total orders than non-returned orders. | A model could achieve high accuracy while performing poorly when identifying actual returns. | Evaluate the target distribution and use precision, recall, F1-score and ROC-AUC in addition to accuracy. |
@@ -188,7 +188,7 @@ The RAAIDD log identifies the key **Risks, Actions, Assumptions, Issues, Decisio
 
 ## Issues
 
-At the proposal stage, several potential issues have been identified but cannot yet be confirmed until the requested data is received and assessed.
+At the proposal stage, several potential issues have been identified however cannot yet be confirmed until the requested data is received and assessed.
 
 | Issue | Description | Current Status / Proposed Response |
 |---|---|---|
@@ -218,18 +218,18 @@ At the proposal stage, several potential issues have been identified but cannot 
 
 ## Dependencies
 
-| Dependency | Description | Relationship |
-|---|---|---|
-| **Client data access → Data profiling** | The required datasets must be supplied before data quality can be assessed. | Data profiling depends on receiving the client data. |
-| **Data profiling → Data cleaning** | Missing, inconsistent and invalid data must first be identified. | Cleaning actions depend on profiling results. |
-| **Data cleaning → Data integration** | Key identifiers and data-quality issues need to be understood before datasets are combined. | Reliable integration depends on appropriately prepared datasets. |
-| **Data integration → Feature engineering** | Predictive features may require information from multiple datasets. | Feature engineering depends on successful dataset integration. |
-| **Feature engineering → Exploratory analysis** | Predictive variables need to be constructed before their relationships with return status can be investigated. | Analysis depends on suitable features. |
-| **Exploratory analysis → Model development** | Initial data patterns and characteristics inform the modelling approach. | Modelling decisions depend on understanding the data. |
-| **Model development → Model evaluation** | Models must first be trained before predictive performance can be measured. | Evaluation depends on completed model training. |
-| **Model evaluation → Model selection** | The final model should be selected using evidence from comparative performance. | Model selection depends on evaluation results. |
-| **Model interpretation → Business recommendations** | Recommendations should be based on demonstrated predictive patterns and model findings. | Business recommendations depend on interpretable results. |
-| **Stakeholder validation → Final recommendations** | Business stakeholders need to confirm whether proposed interventions are operationally realistic. | Final recommendations depend on stakeholder feedback. |
+| **Dependencies From** | **Dependencies To** | **Description** | **Relationship** |
+|---|---|---|---|
+| **Client data access** | **Data profiling** | The required datasets must be supplied before data quality can be assessed. | Data profiling depends on receiving the client data. |
+| **Data profiling** | **Data cleaning** | Missing, inconsistent and invalid data must first be identified. | Cleaning actions depend on the results of data profiling. |
+| **Data cleaning** | **Data integration** | Key identifiers and data-quality issues need to be addressed before datasets are combined. | Reliable integration depends on appropriately prepared datasets. |
+| **Data integration** | **Feature engineering** | Predictive features may require information from multiple integrated datasets. | Feature engineering depends on successful dataset integration. |
+| **Feature engineering** | **Exploratory analysis** | Predictive variables need to be constructed before their relationships with return status can be investigated. | Exploratory analysis depends on suitable engineered features. |
+| **Exploratory analysis** | **Model development** | Initial data patterns and characteristics inform the modelling approach. | Modelling decisions depend on understanding the data. |
+| **Model development** | **Model evaluation** | Models must first be trained before predictive performance can be measured. | Evaluation depends on completed model training. |
+| **Model evaluation** | **Model selection** | The final model should be selected using evidence from comparative performance. | Model selection depends on evaluation results. |
+| **Model interpretation** | **Business recommendations** | Recommendations should be based on demonstrated predictive patterns and model findings. | Business recommendations depend on interpretable model results. |
+| **Stakeholder validation** | **Final recommendations** | Business stakeholders need to confirm whether proposed interventions are operationally realistic. | Final recommendations depend on stakeholder feedback. |
 
 ---
 
@@ -238,43 +238,5 @@ At the proposal stage, several potential issues have been identified but cannot 
 The RAAIDD analysis demonstrates that the proposed project depends on more than simply developing a machine learning model. Reliable and appropriately structured data, careful prevention of data leakage, suitable feature engineering, comparative model evaluation and interpretation of results are all required to determine whether return prediction can provide meaningful business value.
 
 The RAAIDD log will be reviewed and updated throughout the project lifecycle as new information becomes available, particularly once the requested datasets have been received and assessed.
-
----
-
-## Project Scope
-
-### In Scope
-
-The project will investigate whether Data Science and supervised machine learning methods can be used to predict the probability that an STADIOalot order will subsequently be returned.
-
-The project will focus on:
-
-- Collecting and understanding historical order and return data.
-- Analysing customer purchasing behaviour relevant to return risk.
-- Analysing product and category characteristics associated with returns.
-- Analysing seller-level characteristics and return patterns.
-- Investigating size-and-colour combinations where relevant to return behaviour.
-- Cleaning, integrating and preparing the required datasets.
-- Performing exploratory data analysis to identify patterns associated with returns.
-- Engineering features using information available at or before the point of order confirmation.
-- Developing supervised machine learning classification models.
-- Comparing model performance using appropriate evaluation metrics.
-- Identifying the factors that contribute most strongly to return risk.
-- Providing evidence-based recommendations that could support proactive return-management strategies.
-
-### Out of Scope
-
-The project will not:
-
-- Automatically cancel or modify customer orders.
-- Automatically prevent customers from purchasing high-risk products.
-- Implement a production machine learning system within STADIOalot's live e-commerce platform.
-- Make final business decisions on behalf of STADIOalot.
-- Determine whether an individual customer should be penalised because of their predicted return risk.
-- Use information that would only become available after the order or return has occurred as predictive input.
-- Guarantee that predicted high-risk orders will result in returns.
-- Attempt to eliminate all product returns, as some returns are unavoidable and may be legitimate.
-
-The project is intended to provide a predictive and decision-support capability rather than a fully automated operational solution.
 
 ---
