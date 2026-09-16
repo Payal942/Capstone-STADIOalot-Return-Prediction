@@ -4,9 +4,10 @@ This folder contains supporting documentation for the **STADIOalot Return Predic
 
 ## Contents
 
-| Document | Description |
-|---|---|
-| `Data_Request.pdf` | Contains the detailed data request developed for the project, including the required data tables, column names, data types, examples and additional information required from STADIOalot. |
+| Document                       | Description                                                                                                                                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Data_Request.pdf`             | Contains the detailed data request developed for the project, including the required data tables, column names, data types, examples and additional information required from STADIOalot. |
+| `Literature_Review.pdf` | Contains the literature review of three relevant publications and the selected public dataset used for the project.                                                                       |
 
 ## Purpose
 
