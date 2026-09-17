@@ -12,6 +12,7 @@ A Data Science capstone project focused on developing predictive demand forecast
 2. [Motivation for the Study](#motivation-for-the-study)
 3. [Problem Statement](#problem-statement)
 4. [Data Request](#data-request)
+5. [Literature Review](#literature-review)
 5. [Repository Structure](#repository-structure)
 6. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
@@ -69,6 +70,21 @@ The data request consists of eight related tables. Each table provides informati
 The complete data request, including **column names, data types, examples and additional requirements**, is provided in the Data Request document located in the `docs/` folder.
 
 **Data Request Document:** `docs/Data_Request.pdf`
+
+---
+
+## Literature Review
+
+A literature review was conducted to identify existing research relevant to predicting e-commerce product returns. Three publications were reviewed to understand commonly used modelling approaches, preprocessing techniques, datasets and findings.
+
+* **Returnformer (Cao, Zhang & Li, 2026):** Uses graph-based learning and transformer techniques to predict product returns using customer-product relationships.
+* **Proactive Return Prediction (Ma & Wang, 2024):** Uses a heterogeneous graph neural network to predict returns in online fashion retail.
+* **Kalidindi, Narkedamilly & Saladi (2026):** Evaluates predictive models for e-commerce returns and provides a publicly available synthetic dataset that can be used for Part B modelling.
+
+The literature supports the use of machine-learning classification to identify customers or orders at risk of returning products before the return occurs. The reviewed studies also informed the project's preprocessing, feature engineering, model comparison and evaluation approach.
+
+The complete literature review tables and dataset description are provided in:
+`docs/Literature_Review.pdf`
 
 ---
 
