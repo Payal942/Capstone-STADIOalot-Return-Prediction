@@ -350,38 +350,11 @@ The notebooks are designed to be executed in order:
 
 | Notebook                                | Purpose                                          | Input                                           | Output                                                                                         |
 | --------------------------------------- | ------------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| **Notebook 1 — Data Preprocessing**     | Clean, validate and prepare the raw dataset      | `data/raw/ecommerce_returns_synthetic_data.csv` | `data/processed/returns_preprocessed.csv`                                                      |
-| **Notebook 2 — Feature Engineering**    | Create modelling features and remove identifiers | `data/processed/returns_preprocessed.csv`       | `data/processed/returns_features.csv`                                                          |
-| **Notebook 3 — Model 1: Random Forest** | Train and evaluate the Random Forest classifier  | `data/processed/returns_features.csv`           | `models/model1_random_forest.joblib` + `experimental_results/model1_random_forest_metrics.csv` |
-| **Notebook 4 — Model 2: XGBoost**       | Train and evaluate the XGBoost classifier        | `data/processed/returns_features.csv`           | `models/model2_xgboost.joblib` + `experimental_results/model2_xgboost_metrics.csv`             |
+| **Notebook 1 — 01_DataPreprocessing.ipynb**     | Clean, validate and prepare the raw dataset      | `data/raw/ecommerce_returns_synthetic_data.csv` | `data/processed/returns_preprocessed.csv`                                                      |
+| **Notebook 2 — 02_FeatureEngineering.ipynb**    | Create modelling features and remove identifiers | `data/processed/returns_preprocessed.csv`       | `data/processed/returns_features.csv`                                                          |
+| **Notebook 3 — 03_Model1_RandomForest.ipynb** | Train and evaluate the Random Forest classifier  | `data/processed/returns_features.csv`           | `models/model1_random_forest.joblib` + `experimental_results/model1_random_forest_metrics.csv` |
+| **Notebook 4 — 04_Model2_XGBoost.ipynb**       | Train and evaluate the XGBoost classifier        | `data/processed/returns_features.csv`           | `models/model2_xgboost.joblib` + `experimental_results/model2_xgboost_metrics.csv`             |
 
 Both models also generate their respective confusion-matrix visualisations in the `visualisations/` folder.
 
 The resulting models and evaluation metrics are used in the subsequent model-comparison and reporting stages of the STADIOalot return-prediction project.
-
-````
-
-### One thing I would change in your repository
-
-If your actual notebook filenames are currently something like:
-
-```text
-01_DataPreprocessing.ipynb
-02_FeatureEngineering.ipynb
-03_Model1_RandomForest.ipynb
-04_Model2_XGBoost.ipynb
-````
-
-then I would **explicitly include those filenames in the README**, because it makes the repository easier for the assessor to navigate.
-
-For example:
-
-```text
-Notebook 3 — Model 1: Random Forest
-03_Model1_RandomForest.ipynb
-
-Notebook 4 — Model 2: XGBoost
-04_Model2_XGBoost.ipynb
-```
-
-That will also make the README align much more clearly with the actual notebook structure in your GitHub repository.
