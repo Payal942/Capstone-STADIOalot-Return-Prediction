@@ -1,0 +1,16 @@
+Analysis,Model,Metric,Observed Score,95% CI Lower,95% CI Upper,Bootstrap Samples,CI Includes Zero,Interpretation
+Individual Model,Model 1 — Random Forest,Accuracy,0.5,0.4795,0.522,1000,,
+Individual Model,Model 1 — Random Forest,Precision,0.5048076923076923,0.4748213776987371,0.5376141371383454,1000,,
+Individual Model,Model 1 — Random Forest,Recall,0.5198019801980198,0.48841237270574767,0.5526091589404363,1000,,
+Individual Model,Model 1 — Random Forest,F1-Score,0.5121951219512195,0.48460232051370516,0.5391393290034335,1000,,
+Individual Model,Model 1 — Random Forest,ROC-AUC,0.4925252525252526,0.46772598440299856,0.5171455421299189,1000,,
+Individual Model,Model 2 — XGBoost,Accuracy,0.5025,0.481,0.5240125,1000,,
+Individual Model,Model 2 — XGBoost,Precision,0.5070688030160226,0.4755865978064313,0.5361825312149068,1000,,
+Individual Model,Model 2 — XGBoost,Recall,0.5326732673267327,0.5014663449479799,0.562754438023843,1000,,
+Individual Model,Model 2 — XGBoost,F1-Score,0.5195557701593433,0.4919237861939888,0.5439983898551779,1000,,
+Individual Model,Model 2 — XGBoost,ROC-AUC,0.49597559755975595,0.47087454703096904,0.5211634713947082,1000,,
+Paired Model Comparison,Model 2 — XGBoost vs Model 1 — Random Forest,Accuracy,0.0024999999999999467,-0.019012500000000015,0.02300000000000002,1000,True,Confidence interval includes zero
+Paired Model Comparison,Model 2 — XGBoost vs Model 1 — Random Forest,Precision,0.0022611107083303494,-0.019281514373766042,0.021882836206089294,1000,True,Confidence interval includes zero
+Paired Model Comparison,Model 2 — XGBoost vs Model 1 — Random Forest,Recall,0.012871287128712883,-0.017822666195190965,0.04524237226389586,1000,True,Confidence interval includes zero
+Paired Model Comparison,Model 2 — XGBoost vs Model 1 — Random Forest,F1-Score,0.007360648208123766,-0.014484474552535905,0.03063486519158899,1000,True,Confidence interval includes zero
+Paired Model Comparison,Model 2 — XGBoost vs Model 1 — Random Forest,ROC-AUC,0.003450345034503366,-0.016047281341331283,0.024222695270493384,1000,True,Confidence interval includes zero

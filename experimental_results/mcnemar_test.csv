@@ -1,0 +1,2 @@
+Test,Model 1 Correct / Model 2 Incorrect,Model 1 Incorrect / Model 2 Correct,Both Correct,Both Incorrect,Test Statistic,p-value,Alpha,Decision
+McNemar's Test,240,245,760,755,0.032989690721649485,0.8558725986602864,0.05,Fail to reject H0 — no statistically significant difference in paired classification errors
