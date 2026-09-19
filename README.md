@@ -18,9 +18,13 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Feature Engineering](#feature-engineering)
    - [Model 1 – Random Forest](#model-1--random-forest)
    - [Model 2 – XGBoost](#model-2--xgboost)
+7. [Model Performance Evaluation](#model-performance-evaluation)
+   - [Model 1 Performance Evaluation](#model-1-performance-evaluation)
+   - [Model 2 Performance Evaluation](#model-2-performance-evaluation)
+   - [Model Comparison](#model-comparison)
    - [Requirements](#requirements)
-7. [Repository Structure](#repository-structure)
-8. [RAAIDD Log](#raaidd-log)
+8. [Repository Structure](#repository-structure)
+9. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
    - [Actions](#actions)
    - [Assumptions](#assumptions)
@@ -84,7 +88,7 @@ A literature review was conducted to identify existing research relevant to pred
 
 * **Returnformer (Cao, Zhang & Li, 2026):** Uses graph-based learning and transformer techniques to predict product returns using customer-product relationships.
 * **Proactive Return Prediction (Ma & Wang, 2024):** Uses a heterogeneous graph neural network to predict returns in online fashion retail.
-* **Kalidindi, Narkedamilly & Saladi (2026):** Evaluates predictive models for e-commerce returns and provides a publicly available synthetic dataset that can be used for Part B modelling.
+* **Kalidindi, Narkedamilly & Saladi (2026):** Evaluates predictive models for e-commerce returns and provides a publicly available synthetic dataset that can be used for modelling.
 
 The literature supports the use of machine-learning classification to identify customers or orders at risk of returning products before the return occurs. The reviewed studies also informed the project's preprocessing, feature engineering, model comparison and evaluation approach.
 
@@ -92,7 +96,8 @@ The complete literature review tables and dataset description are provided in:
 `docs/Literature_Review.pdf`
 
 ---
-# Modelling
+
+## Modelling
 
 Two supervised machine learning classification models are used to predict whether an e-commerce order is likely to be returned. The modelling workflow consists of:
 
@@ -249,13 +254,164 @@ For the complete Model 2 methodology, hyperparameters, training process and infe
 
 [Model2.MD](docs/Model2.MD)
 
+---
+
+## Model Performance Evaluation
+## Model 1 Performance Evaluation
+
+The Model 1 Performance notebook evaluates the saved Random Forest model developed in the modelling stage.
+
+The performance analysis recreates the same stratified 80/20 test split using `random_state=42` and evaluates the saved model on the test observations. The notebook does not retrain the Random Forest model.
+
+The performance evaluation includes:
+
+* Accuracy
+* Precision
+* Recall
+* F1-score
+* ROC-AUC
+* Classification report
+* Confusion matrix
+* Bootstrap confidence intervals
+
+Bootstrap confidence intervals are calculated using 1,000 bootstrap samples and a 95% confidence level.
+
+**Model 1 Performance documentation:**
+
+`docs/Model1Performance.MD`
+
+**Model 1 Performance notebook:**
+
+`notebooks/05_Model1Performance.ipynb`
+
+**Saved Model 1:**
+
+`models/model1_random_forest.joblib`
+
+**Performance metrics:**
+
+`experimental_results/model1_random_forest_metrics.csv`
+
+**Bootstrap confidence intervals:**
+
+`experimental_results/model1_bootstrap_confidence_intervals.csv`
+
+The complete Model 1 performance methodology and results are documented in:
+
+[Model1Performance.MD](docs/Model1Performance.MD)
+
+---
+
+## Model 2 Performance Evaluation
+
+The Model 2 Performance notebook evaluates the saved XGBoost model developed in the modelling stage.
+
+The performance analysis recreates the same stratified 80/20 test split using `random_state=42` and evaluates the saved model on the test observations. The notebook does not retrain the XGBoost model.
+
+The performance evaluation includes:
+
+* Accuracy
+* Precision
+* Recall
+* F1-score
+* ROC-AUC
+* Classification report
+* Confusion matrix
+* Bootstrap confidence intervals
+
+Bootstrap confidence intervals are calculated using 1,000 bootstrap samples and a 95% confidence level.
+
+**Model 2 Performance documentation:**
+
+`docs/Model2Performance.MD`
+
+**Model 2 Performance notebook:**
+
+`notebooks/06_Model2Performance.ipynb`
+
+**Saved Model 2:**
+
+`models/model2_xgboost.joblib`
+
+**Performance metrics:**
+
+`experimental_results/model2_xgboost_metrics.csv`
+
+**Bootstrap confidence intervals:**
+
+`experimental_results/model2_bootstrap_confidence_intervals.csv`
+
+The complete Model 2 performance methodology and results are documented in:
+
+[Model2Performance.MD](docs/Model2Performance.MD)
+
+---
+
+## Model Comparison
+
+The Model Comparison notebook provides the comparative analysis of Model 1 and Model 2.
+
+The comparison evaluates the saved Random Forest and XGBoost pipelines on the same stratified test observations using `random_state=42`. Neither model is retrained during the comparison stage.
+
+The comparison includes:
+
+* Accuracy
+* Precision
+* Recall
+* F1-score
+* ROC-AUC
+* Confusion matrix comparison
+* ROC curve comparison
+* Metric differences
+* Bootstrap 95% confidence intervals
+* Paired bootstrap comparison
+* McNemar's test
+
+The paired bootstrap analysis reports the metric difference as **Model 2 − Model 1** using 1,000 bootstrap samples and a 95% confidence interval.
+
+McNemar's test is used to compare the classification outcomes produced by the two models on the same test observations, using an alpha level of `0.05`.
+
+**Model Comparison documentation:**
+
+`docs/Comparison.MD`
+
+**Model Comparison notebook:**
+
+`notebooks/07_Comparison.ipynb`
+
+**Model comparison metrics:**
+
+`experimental_results/model_comparison_metrics.csv`
+
+**Model comparison bootstrap confidence intervals:**
+
+`experimental_results/model_comparison_bootstrap_confidence_intervals.csv`
+
+**Metric differences:**
+
+`experimental_results/model_metric_differences.csv`
+
+**McNemar's test:**
+
+`experimental_results/mcnemar_test.csv`
+
+For the complete model comparison methodology and statistical analysis, see:
+
+[Comparison.MD](docs/Comparison.MD)
+
 ## Requirements
 
-The Python packages required to run the preprocessing, feature engineering and modelling notebooks/scripts are provided in: `experimental_setup/requirements.txt`
+The Python packages required to run the preprocessing, feature engineering and modelling notebooks/scripts are provided in:
+
+`requirements.txt`
 
 The requirements file contains the dependencies required for the project environment, including the libraries used for data processing, preprocessing, machine learning, model persistence and evaluation.
 
-To install the project dependencies: `pip install -r experimental_setup/requirements.txt`
+To install the project dependencies:
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
@@ -285,10 +441,19 @@ STADIOalot-Return-Prediction/
 │   ├── FeatureEngineering.MD
 │   ├── Model1.MD
 │   └── Model2.MD
+│   ├── Model1Performance.MD
+│   ├── Model2Performance.MD
+│   └── Comparison.MD
 │
 ├── experimental_results/
 │   ├── model1_random_forest_metrics.csv
+│   ├── model1_bootstrap_confidence_intervals.csv
 │   ├── model2_xgboost_metrics.csv
+│   ├── model2_bootstrap_confidence_intervals.csv
+│   ├── model_comparison_metrics.csv
+│   ├── model_comparison_bootstrap_confidence_intervals.csv
+│   ├── model_metric_differences.csv
+│   ├── mcnemar_test.csv
 │   └── README.md
 │
 ├── experimental_setup/
@@ -306,6 +471,9 @@ STADIOalot-Return-Prediction/
 │   ├── 02_FeatureEngineering.ipynb
 │   ├── 03_Model1_RandomForest.ipynb
 │   ├── 04_Model2_XGBoost.ipynb
+│   ├── 05_Model1Performance.ipynb
+│   ├── 06_Model2Performance.ipynb
+│   ├── 07_Comparison.ipynb
 │   └── README.md
 │
 ├── scripts/

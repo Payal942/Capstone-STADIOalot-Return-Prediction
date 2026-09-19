@@ -516,11 +516,11 @@ Saved Random Forest             Saved XGBoost
 Model Pipeline                  Model Pipeline
      │                               │
      ▼                               ▼
-03_Model1Performance.ipynb     Model2Performance.ipynb
+04_Model1Performance.ipynb     05_Model2Performance.ipynb
      │                               │
      └───────────────┬───────────────┘
                      ▼
-            ModelComparison.ipynb
+              07_Comparison.ipynb
                      │
                      ▼
         Comparative Statistical Analysis
@@ -541,9 +541,9 @@ Model Pipeline                  Model Pipeline
 | **02_FeatureEngineering.ipynb**  | Create modelling features and remove identifiers | `data/processed/returns_preprocessed.csv`       | `data/processed/returns_features.csv`                    |
 | **03_Model1_RandomForest.ipynb** | Train the Random Forest classifier               | `data/processed/returns_features.csv`           | `models/model1_random_forest.joblib` + Model 1 metrics   |
 | **04_Model2_XGBoost.ipynb**      | Train the XGBoost classifier                     | `data/processed/returns_features.csv`           | `models/model2_xgboost.joblib` + Model 2 metrics         |
-| **03_Model1Performance.ipynb**   | Evaluate the saved Random Forest model           | `returns_features.csv` + saved Model 1          | Model 1 performance and bootstrap results                |
-| **Model2Performance.ipynb**      | Evaluate the saved XGBoost model                 | `returns_features.csv` + saved Model 2          | Model 2 performance and bootstrap results                |
-| **ModelComparison.ipynb**        | Compare both saved models statistically          | `returns_features.csv` + both saved models      | Comparison metrics, bootstrap results and McNemar's test |
+| **05_Model1Performance.ipynb**   | Evaluate the saved Random Forest model           | `returns_features.csv` + saved Model 1          | Model 1 performance and bootstrap results                |
+| **06_Model2Performance.ipynb**      | Evaluate the saved XGBoost model                 | `returns_features.csv` + saved Model 2          | Model 2 performance and bootstrap results                |
+| **07_Comparison.ipynb**        | Compare both saved models statistically          | `returns_features.csv` + both saved models      | Comparison metrics, bootstrap results and McNemar's test |
 
 ---
 
@@ -557,9 +557,9 @@ Each notebook is supported by documentation in the project's `docs/` folder.
 | `02_FeatureEngineering.ipynb`  | `docs/FeatureEngineering.MD` |
 | `03_Model1_RandomForest.ipynb` | `docs/Model1.MD`             |
 | `04_Model2_XGBoost.ipynb`      | `docs/Model2.MD`             |
-| `03_Model1Performance.ipynb`   | `docs/Model1Performance.MD`  |
-| `Model2Performance.ipynb`      | `docs/Model2Performance.MD`  |
-| `ModelComparison.ipynb`        | `docs/Comparison.MD`         |
+| `05_Model1Performance.ipynb`   | `docs/Model1Performance.MD`  |
+| `06_Model2Performance.ipynb`      | `docs/Model2Performance.MD`  |
+| `07_Comparison.ipynb`        | `docs/Comparison.MD`         |
 
 The notebooks provide the executable implementation, while the Markdown documentation explains the methodology, inputs, outputs, evaluation procedures and results.
 

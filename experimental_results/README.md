@@ -391,7 +391,7 @@ Saved Model 1              Saved Model 2
      │                          │
      └────────────┬─────────────┘
                   ▼
-          ModelComparison.ipynb
+           07_Comparison.ipynb
                   │
                   ▼
        Common Stratified Test Set
@@ -448,7 +448,7 @@ STADIOalot-Return-Prediction/
 │   ├── 02_FeatureEngineering.ipynb
 │   ├── 03_Model1_RandomForest.ipynb
 │   ├── 04_Model2_XGBoost.ipynb
-│   └── ModelComparison.ipynb
+│   └── 07_Comparison.ipynb
 │
 ├── models/
 │   ├── model1_random_forest.joblib
