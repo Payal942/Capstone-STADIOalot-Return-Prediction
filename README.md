@@ -13,15 +13,20 @@ A Data Science capstone project focused on developing predictive demand forecast
 3. [Problem Statement](#problem-statement)
 4. [Data Request](#data-request)
 5. [Literature Review](#literature-review)
-5. [Repository Structure](#repository-structure)
-6. [RAAIDD Log](#raaidd-log)
+6. [Modelling](#modelling)
+   - [Data Preprocessing](#data-preprocessing)
+   - [Feature Engineering](#feature-engineering)
+   - [Model 1 – Random Forest](#model-1--random-forest)
+   - [Model 2 – XGBoost](#model-2--xgboost)
+   - [Requirements](#requirements)
+7. [Repository Structure](#repository-structure)
+8. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
    - [Actions](#actions)
    - [Assumptions](#assumptions)
    - [Issues](#issues)
    - [Decisions](#decisions)
    - [Dependencies](#dependencies)
-
 
 ## Project Overview
 
@@ -87,6 +92,172 @@ The complete literature review tables and dataset description are provided in:
 `docs/Literature_Review.pdf`
 
 ---
+# Modelling
+
+Two supervised machine learning classification models are used to predict whether an e-commerce order is likely to be returned. The modelling workflow consists of:
+
+1. Raw dataset loading
+2. Data preprocessing
+3. Feature engineering
+4. Model 1 training and inference
+5. Model 2 training and inference
+6. Model evaluation and comparison
+
+The target variable used for prediction is `Return_Status`, where:
+
+- `Returned = 1`
+- `Not Returned = 0`
+
+Post-order information that would not be available at the prediction point is excluded to reduce the risk of data leakage.
+
+## Data Preprocessing
+
+The preprocessing stage prepares the raw e-commerce returns dataset for modelling. The preprocessing workflow includes data inspection, data-type handling, missing-value treatment, duplicate checks, categorical-value preparation, removal of inappropriate identifier fields and separation of the target variable from the predictive features.
+
+The preprocessing documentation provides the full explanation of the preprocessing decisions, including the reason for each transformation.
+
+**Preprocessing documentation:**  
+`docs/Preprocessing.MD`
+
+**Preprocessing notebook/script:**  
+`notebooks/preprocessing.ipynb`
+
+**Input dataset:**  
+`data/raw/ecommerce_returns_synthetic_data.csv`
+
+**Processed dataset:**  
+`data/processed/returns_preprocessed.csv`
+
+For instructions on running the preprocessing workflow and understanding the preprocessing techniques used, see:
+
+[Preprocessing.MD](docs/Preprocessing.MD)
+
+## Feature Engineering
+
+Feature engineering transforms the cleaned data into predictive variables suitable for machine learning. The feature engineering workflow includes the creation of transactional, temporal and derived numerical features. Examples include:
+
+- Order year
+- Order month
+- Order day
+- Day of week
+- Week number
+- Weekend indicator
+- Order gross value
+- Discount fraction
+- Estimated discount amount
+- Age band
+
+Identifier-like columns that do not provide meaningful predictive information are excluded from the modelling features.
+
+**Feature Engineering documentation:**  
+`docs/FeatureEngineering.MD`
+
+**Feature Engineering notebook/script:**  
+`notebooks/feature_engineering.ipynb`
+
+**Input:**  
+`data/processed/returns_preprocessed.csv`
+
+**Output:**  
+`data/processed/returns_features.csv`
+
+For the complete feature engineering methodology and instructions for running the notebook/script, see:
+
+[FeatureEngineering.MD](docs/FeatureEngineering.MD)
+
+## Model 1 – Random Forest
+
+Model 1 uses a **Random Forest Classifier** to predict whether an order will be returned. The model uses a stratified 80/20 train-test split and preprocessing pipelines for numerical and categorical features. The Random Forest configuration is:
+
+| Hyperparameter | Value |
+|---|---:|
+| `n_estimators` | 300 |
+| `max_depth` | 12 |
+| `min_samples_split` | 5 |
+| `min_samples_leaf` | 2 |
+| `class_weight` | `balanced_subsample` |
+| `random_state` | 42 |
+| `n_jobs` | -1 |
+
+The model is evaluated using:
+
+- Accuracy
+- Precision
+- Recall
+- F1-score
+- ROC-AUC
+- Confusion matrix
+
+**Model 1 documentation:**  
+`docs/Model1.MD`
+
+**Model 1 notebook/script:**  
+`notebooks/model1_random_forest.ipynb`
+
+**Trained model:**  
+`models/model1_random_forest.joblib`
+
+**Model results:**  
+`experimental_results/model1_random_forest_metrics.csv`
+
+For the complete Model 1 methodology, hyperparameters, training process and inference instructions, see:
+
+[Model1.MD](docs/Model1.MD)
+
+## Model 2 – XGBoost
+
+Model 2 uses an **XGBoost Classifier** to predict whether an order will be returned.
+
+The model uses the same stratified 80/20 train-test approach to support a consistent comparison with Model 1.
+
+The XGBoost configuration is:
+
+| Hyperparameter | Value |
+|---|---:|
+| `n_estimators` | 300 |
+| `max_depth` | 6 |
+| `learning_rate` | 0.05 |
+| `subsample` | 0.80 |
+| `colsample_bytree` | 0.80 |
+| `min_child_weight` | 2 |
+| `reg_lambda` | 1.0 |
+| `random_state` | 42 |
+| `n_jobs` | -1 |
+
+The model is evaluated using:
+
+- Accuracy
+- Precision
+- Recall
+- F1-score
+- ROC-AUC
+- Confusion matrix
+
+**Model 2 documentation:**  
+`docs/Model2.MD`
+
+**Model 2 notebook/script:**  
+`notebooks/model2_xgboost.ipynb`
+
+**Trained model:**  
+`models/model2_xgboost.joblib`
+
+**Model results:**  
+`experimental_results/model2_xgboost_metrics.csv`
+
+For the complete Model 2 methodology, hyperparameters, training process and inference instructions, see:
+
+[Model2.MD](docs/Model2.MD)
+
+## Requirements
+
+The Python packages required to run the preprocessing, feature engineering and modelling notebooks/scripts are provided in: `experimental_setup/requirements.txt`
+
+The requirements file contains the dependencies required for the project environment, including the libraries used for data processing, preprocessing, machine learning, model persistence and evaluation.
+
+To install the project dependencies: `pip install -r experimental_setup/requirements.txt`
+
+---
 
 ## Repository Structure
 
@@ -98,11 +269,26 @@ STADIOalot-Return-Prediction/
 │
 ├── data/
 │   ├── raw/
+│   │   ├── ecommerce_returns_synthetic_data.csv
 │   │   └── README.md
+│   │
 │   └── processed/
+│       ├── returns_preprocessed.csv
+│       ├── returns_features.csv
 │       └── README.md
 │
-├── models/
+├── docs/
+│   ├── README.md
+│   ├── Data_Request.pdf
+│   ├── Literature_Review.pdf
+│   ├── Preprocessing.MD
+│   ├── FeatureEngineering.MD
+│   ├── Model1.MD
+│   └── Model2.MD
+│
+├── experimental_results/
+│   ├── model1_random_forest_metrics.csv
+│   ├── model2_xgboost_metrics.csv
 │   └── README.md
 │
 ├── experimental_setup/
@@ -110,24 +296,32 @@ STADIOalot-Return-Prediction/
 │   ├── requirements.txt
 │   └── configuration.md
 │
-├── experimental_results/
+├── models/
+│   ├── model1_random_forest.joblib
+│   ├── model2_xgboost.joblib
+│   └── README.md
+│
+├── notebooks/
+│   ├── 01_Preprocessing.ipynb
+│   ├── 02_FeatureEngineering.ipynb
+│   ├── 03_Model1_RandomForest.ipynb
+│   ├── 04_Model2_XGBoost.ipynb
+│   └── README.md
+│
+├── scripts/
 │   └── README.md
 │
 ├── statistical_helpers/
 │   └── README.md
 │
 ├── visualisations/
+│   ├── model1_random_forest_confusion_matrix.png
+│   ├── model2_xgboost_confusion_matrix.png
 │   └── README.md
 │
-├── notebooks/
-│   └── README.md
-│
-├── scripts/
-│   └── README.md
-│
-└── docs/
-    ├── README.md
-    └── Data_Request.pdf
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
     
 ## Repository Structure
