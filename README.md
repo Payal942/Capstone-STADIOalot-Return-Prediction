@@ -403,17 +403,26 @@ For the complete model comparison methodology and statistical analysis, see:
 
 ## Requirements
 
-The Python packages required to run the preprocessing, feature engineering and modelling notebooks/scripts are provided in:
+The Python packages required to run the preprocessing, feature engineering and modelling notebooks/scripts are provided in the **`experimental_setup/`** folder.
 
-`requirements.txt`
+The requirements file is located at:
+
+`experimental_setup/requirements.txt`
 
 The requirements file contains the dependencies required for the project environment, including the libraries used for data processing, preprocessing, machine learning, model persistence and evaluation.
 
-To install the project dependencies:
+To install the project dependencies, run:
 
 ```bash
-pip install -r requirements.txt
+pip install -r experimental_setup/requirements.txt
 ```
+
+The `experimental_setup/` folder also contains:
+
+* `requirements.txt` – Python libraries and package versions required for the project.
+* `configuration.md` – Experimental configuration, modelling settings and other relevant setup information.
+* `README.md` – Documentation describing the project environment and experimental setup.
+
 
 ---
 
@@ -491,8 +500,7 @@ STADIOalot-Return-Prediction/
 │
 ├── .gitignore
 ├── LICENSE
-├── README.md
-└── requirements.txt
+└── README.md
 ```
     
 ## Repository Structure
