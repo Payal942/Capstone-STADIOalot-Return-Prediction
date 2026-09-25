@@ -4,7 +4,7 @@ A Data Science capstone project focused on developing predictive demand forecast
 **Student Name:** Payal.S. Morar  
 **Student Number:** 23301266  
 **Institution:** School of Information Technology, STADIO Higher Education  
-**Due Date:** 7 September 2026  
+**Due Date:** 28 September 2026  
 
 ## Table of Contents
 
