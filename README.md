@@ -95,6 +95,8 @@ The literature supports the use of machine-learning classification to identify c
 The complete literature review tables and dataset description are provided in:
 `docs/Literature_Review.pdf`
 
+[Literature_Review.pdf](docs/Literature_Review.pdf)
+
 ---
 
 ## Modelling

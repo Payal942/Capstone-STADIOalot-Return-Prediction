@@ -34,7 +34,7 @@ The performance analysis includes:
 | Random State | `42` |
 | Evaluation Notebook | `Model2Performance.ipynb` |
 
-The performance notebook loads the trained XGBoost pipeline produced during Part B and evaluates it on the recreated test set.
+The performance notebook loads the trained XGBoost pipeline produced and evaluates it on the recreated test set.
 
 The same stratified train/test split configuration used for Model 1 is applied to Model 2 to ensure that the two models are evaluated using the same test-set methodology.
 
@@ -153,7 +153,7 @@ random_state = 42
 stratify = y
 ```
 
-The notebook then generates Model 2 predictions, performance metrics, classification results, confusion matrix information, and bootstrap confidence intervals.
+The notebook then generates Model 2 predictions, performance metrics, classification results, confusion matrix information and bootstrap confidence intervals.
 
 ---
 
@@ -230,7 +230,7 @@ $$
 Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
 $$
 
-Accuracy is useful for measuring overall correctness, but it should be interpreted together with precision, recall, F1-score, and ROC-AUC.
+Accuracy is useful for measuring overall correctness, but it should be interpreted together with precision, recall, F1-score and ROC-AUC.
 
 ---
 
@@ -378,13 +378,13 @@ The output contains the following information:
 | `Bootstrap Iterations Requested` | Requested number of bootstrap iterations |
 | `Random State`                   | Bootstrap random state                   |
 
-The Model 2 performance metrics generated during Part B are stored separately in:
+The Model 2 performance metrics generated are stored separately in:
 
 ```text
 experimental_results/model2_xgboost_metrics.csv
 ```
 
-The Part C performance notebook does not overwrite the original Part B metrics file. It creates the separate bootstrap confidence interval output required for the Part C statistical analysis.
+The performance notebook does not overwrite the original metrics file. It creates the separate bootstrap confidence interval output required for the statistical analysis.
 
 ---
 
@@ -396,10 +396,10 @@ The Model 2 performance analysis uses and produces the following files.
 | ---------------------------------------------------------------- | ---------------------------------------------------------- |
 | `data/processed/returns_features.csv`                            | Input feature-engineered dataset                           |
 | `models/model2_xgboost.joblib`                                   | Saved XGBoost model pipeline                               |
-| `experimental_results/model2_xgboost_metrics.csv`                | Model 2 metrics generated during Part B                    |
-| `experimental_results/model2_bootstrap_confidence_intervals.csv` | Bootstrap 95% confidence intervals generated during Part C |
+| `experimental_results/model2_xgboost_metrics.csv`                | Model 2 metrics generated                    |
+| `experimental_results/model2_bootstrap_confidence_intervals.csv` | Bootstrap 95% confidence intervals generated |
 
-The Part B metrics file provides the original Model 2 performance results, while the Part C bootstrap file provides statistical uncertainty estimates for the performance metrics.
+The metrics file provides the original Model 2 performance results, while the bootstrap file provides statistical uncertainty estimates for the performance metrics.
 
 ---
 
@@ -420,7 +420,7 @@ The notebook performs validation checks to confirm that:
 * The number of probability predictions matches the number of test observations.
 * The bootstrap output file is successfully saved.
 
-These checks help identify missing files, invalid model files, and prediction-size mismatches before the results are finalised.
+These checks help identify missing files, invalid model files and prediction-size mismatches before the results are finalised.
 
 ---
 
@@ -460,7 +460,7 @@ Calculate 95% confidence intervals
 Save statistical results
 ```
 
-The workflow uses the saved Model 2 pipeline rather than retraining the XGBoost model during the Part C performance evaluation.
+The workflow uses the saved Model 2 pipeline rather than retraining the XGBoost model performance evaluation.
 
 ---
 
@@ -468,7 +468,7 @@ The workflow uses the saved Model 2 pipeline rather than retraining the XGBoost 
 
 Model 2 performance is evaluated using the test portion of the feature-engineered STADIOalot dataset.
 
-The evaluation includes standard classification metrics, a classification report, confusion matrix analysis, and bootstrap 95% confidence intervals.
+The evaluation includes standard classification metrics, a classification report, confusion matrix analysis and bootstrap 95% confidence intervals.
 
 The main performance metrics include:
 
@@ -485,13 +485,13 @@ The statistical analysis uses:
 * A 95% confidence level
 * Bootstrap random state `42`
 
-The main statistical output produced during Part C is:
+The main statistical output produced is:
 
 ```text
 experimental_results/model2_bootstrap_confidence_intervals.csv
 ```
 
-The original Model 2 performance metrics from Part B are stored separately in:
+The original Model 2 performance metrics are stored separately in:
 
 ```text
 experimental_results/model2_xgboost_metrics.csv

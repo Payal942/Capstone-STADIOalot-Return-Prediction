@@ -34,7 +34,7 @@ The performance analysis includes:
 | Random State        | `42`                                  |
 | Evaluation Notebook | `03_Model1Performance.ipynb`          |
 
-The performance notebook loads the trained Random Forest pipeline produced during Part B and evaluates it on the recreated test set.
+The performance notebook loads the trained Random Forest pipeline produced and evaluates it on the recreated test set.
 
 ---
 
@@ -219,7 +219,7 @@ $$
 Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
 $$
 
-Accuracy is useful for measuring overall correctness, but it should be interpreted together with precision, recall, F1-score, and ROC-AUC.
+Accuracy is useful for measuring overall correctness, but it should be interpreted together with precision, recall, F1-score and ROC-AUC.
 
 ### 9.2 Precision
 
@@ -342,13 +342,13 @@ The output contains the following information:
 | `Bootstrap Iterations Requested` | Requested number of bootstrap iterations |
 | `Random State`                   | Bootstrap random state                   |
 
-The Model 1 performance metrics generated during Part B are stored separately in:
+The Model 1 performance metrics generated are stored separately in:
 
 ```text
 experimental_results/model1_random_forest_metrics.csv
 ```
 
-The Part C performance notebook saves the bootstrap confidence interval file and does not overwrite the original Part B metrics file.
+The performance notebook saves the bootstrap confidence interval file and does not overwrite the original metrics file.
 
 ---
 
@@ -360,8 +360,8 @@ The Model 1 performance analysis uses and produces the following files.
 | ---------------------------------------------------------------- | ---------------------------------------------------------- |
 | `data/processed/returns_features.csv`                            | Input feature-engineered dataset                           |
 | `models/model1_random_forest.joblib`                             | Saved Random Forest model pipeline                         |
-| `experimental_results/model1_random_forest_metrics.csv`          | Model 1 metrics generated during Part B                    |
-| `experimental_results/model1_bootstrap_confidence_intervals.csv` | Bootstrap 95% confidence intervals generated during Part C |
+| `experimental_results/model1_random_forest_metrics.csv`          | Model 1 metrics generated                   |
+| `experimental_results/model1_bootstrap_confidence_intervals.csv` | Bootstrap 95% confidence intervals generated |
 
 ---
 
@@ -380,7 +380,7 @@ The notebook performs validation checks to confirm that:
 * The number of probability predictions matches the number of test observations.
 * The bootstrap output file is successfully saved.
 
-These checks help identify missing files, invalid model files, and prediction-size mismatches before the results are finalised.
+These checks help identify missing files, invalid model files and prediction-size mismatches before the results are finalised.
 
 ---
 
@@ -426,7 +426,7 @@ Save statistical results
 
 Model 1 performance is evaluated using the test portion of the feature-engineered STADIOalot dataset.
 
-The evaluation includes standard classification metrics, a classification report, confusion matrix analysis, and bootstrap 95% confidence intervals.
+The evaluation includes standard classification metrics, a classification report, confusion matrix analysis and bootstrap 95% confidence intervals.
 
 The main statistical output produced is:
 
