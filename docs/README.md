@@ -19,6 +19,7 @@ The documents in this folder provide the background, data requirements, research
 | `Model1Performance.MD`  | Documents the performance evaluation of Model 1, including classification metrics, confusion matrix results, bootstrap confidence intervals and the associated performance analysis notebook.       |
 | `Model2Performance.MD`  | Documents the performance evaluation of Model 2, including classification metrics, confusion matrix results, bootstrap confidence intervals and the associated performance analysis notebook.       |
 | `Comparison.MD`         | Documents the comparative evaluation of Model 1 and Model 2, including performance metric differences, paired bootstrap confidence intervals, McNemar's test, confusion matrices and ROC curve comparison. |
+| `Client_Recommendation_Report.pdf`         | Contains the client recommendation report, including the selected model, recommended model improvements, adaptation requirements for the requested STADIOalot data and alignment with the related literature. |
 
 ---
 
@@ -41,7 +42,8 @@ docs/
 │
 ├── Model1Performance.MD
 ├── Model2Performance.MD
-└── Comparison.MD
+├── Comparison.MD
+└── Client_Recommendation.pdf
 ```
 
 ---
@@ -78,6 +80,14 @@ The documentation describes the evaluation of the trained models and the statist
 
 ---
 
+## Client Recommendation
+
+* **Client Recommendation** — Provides the client recommendation report based on the results presented in Part C. The report discusses the model selected for the STADIOalot return prediction problem, potential improvements to the selected model, adaptation requirements for the requested SS1 data and whether the modelling results align with the related literature reviewed.
+
+The report provides a formal business-oriented interpretation of the experimental findings and translates the technical results into recommendations relevant to the STADIOalot return prediction use case.
+
+---
+
 ## Relationship to the Notebooks
 
 The technical documentation corresponds to the project's Jupyter notebooks:
@@ -88,9 +98,9 @@ The technical documentation corresponds to the project's Jupyter notebooks:
 | `FeatureEngineering.MD` | `02_FeatureEngineering.ipynb`  |
 | `Model1.MD`             | `03_Model1_RandomForest.ipynb` |
 | `Model2.MD`             | `04_Model2_XGBoost.ipynb`      |
-| `Model1Performance.MD`  | `03_Model1Performance.ipynb`   |
-| `Model2Performance.MD`  | `Model2Performance.ipynb`      |
-| `Comparison.MD`         | `ModelComparison.ipynb`        |
+| `Model1Performance.MD`  | `05_Model1Performance.ipynb`   |
+| `Model2Performance.MD`  | `06_Model2Performance.ipynb`      |
+| `Comparison.MD`         | `07_ModelComparison.ipynb`        |
 
 The notebooks contain the executable implementation, while the corresponding Markdown documents explain the methodology, implementation decisions, outputs, evaluation procedures and results.
 
@@ -128,14 +138,14 @@ FeatureEngineering.MD
 Model1.MD                       Model2.MD
      │                             │
      ▼                             ▼
-Model 1 Performance             Model 2 Performance
+05_Model1Performance.ipynb   06_Model2Performance.ipynb
      │                             │
      ▼                             ▼
 Model1Performance.MD            Model2Performance.MD
      │                             │
      └──────────────┬──────────────┘
                     ▼
-             ModelComparison.ipynb
+          07_ModelComparison.ipynb
                     │
                     ▼
               Comparison.MD
