@@ -23,8 +23,9 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Model 2 Performance Evaluation](#model-2-performance-evaluation)
    - [Model Comparison](#model-comparison)
    - [Requirements](#requirements)
-8. [Repository Structure](#repository-structure)
-9. [RAAIDD Log](#raaidd-log)
+8. [Client Recommendation](#client-recommendation)
+9. [Repository Structure](#repository-structure)
+10. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
    - [Actions](#actions)
    - [Assumptions](#assumptions)
@@ -423,6 +424,22 @@ The `experimental_setup/` folder also contains:
 * `configuration.md` – Experimental configuration, modelling settings and other relevant setup information.
 * `README.md` – Documentation describing the project environment and experimental setup.
 
+---
+
+## Client Recommendation
+
+The client recommendation report evaluates the results and provides recommendations for the deployment and further development of the selected return-prediction model.
+
+The report addresses:
+
+- The comparison between Model 1 (Random Forest) and Model 2 (XGBoost)
+- Recommended improvements to the selected model
+- Adaptation of the model to the requested SS1 data
+- Alignment between the modelling results and the related literature
+
+The complete client recommendation report is provided in: `docs/Client_Recommendation_Report.pdf`
+
+[Client_Recommendation_Report.pdf](docs/Client_Recommendation_Report.pdf)
 
 ---
 
@@ -445,16 +462,17 @@ STADIOalot-Return-Prediction/
 │       └── README.md
 │
 ├── docs/
-│   ├── README.md
+│   ├── Client_Recommendation_Report.pdf
+│   ├── Comparison.MD
 │   ├── Data_Request.pdf
-│   ├── Literature_Review.pdf
-│   ├── Preprocessing.MD
 │   ├── FeatureEngineering.MD
+│   ├── Literature_Review.pdf
 │   ├── Model1.MD
-│   └── Model2.MD
 │   ├── Model1Performance.MD
+│   ├── Model2.MD
 │   ├── Model2Performance.MD
-│   └── Comparison.MD
+│   ├── Preprocessing.MD
+│   └── README.md
 │
 ├── experimental_results/
 │   ├── model1_random_forest_metrics.csv
