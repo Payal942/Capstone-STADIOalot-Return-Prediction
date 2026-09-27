@@ -12,14 +12,15 @@ The modelling process includes:
 * Separating features and target
 * Creating an 80/20 stratified train/test split
 * Identifying numerical and categorical features
-* Applying preprocessing
+* Applying numerical and categorical preprocessing
 * Training the XGBoost classifier
-* Generating class predictions and return probabilities
+* Generating test-set class predictions and return probabilities
 * Evaluating model performance
 * Generating a classification report
 * Generating a confusion matrix
-* Saving the trained model
+* Saving the trained model pipeline
 * Saving the evaluation metrics
+* Performing final validation checks
 
 The target variable is:
 
@@ -36,9 +37,9 @@ where:
 
 ---
 
-## 2. Model 2 Training and Inference File
+## 2. Model 2 Training and Test Prediction Notebook
 
-The notebook responsible for **Model 2 training and inference** is:
+The notebook responsible for **Model 2 training and test-set prediction** is:
 
 ```text
 notebooks/04_Model2_XGBoost.ipynb
@@ -66,9 +67,9 @@ XGBoost Classifier
 Trained Model Pipeline
 ```
 
-### Inference
+### Test-Set Prediction
 
-After training, the notebook performs inference on the unseen testing dataset.
+After training, the notebook performs prediction on the held-out testing dataset.
 
 It generates:
 
@@ -77,7 +78,7 @@ Class Predictions
 Return Probabilities
 ```
 
-The class prediction identifies whether an order is predicted to be returned, while the probability represents the estimated probability of the `Returned` class.
+The class prediction identifies whether an order is predicted to be returned, while the probability represents the model's estimated probability for the `Returned` class.
 
 ---
 
@@ -115,7 +116,7 @@ y = df["Return_Status"].astype(int)
 
 All remaining columns in `returns_features.csv` are used as predictor variables.
 
-The model uses information available from the feature-engineered dataset and does not use post-return information that was removed during the preprocessing and feature-engineering stages.
+The model therefore uses the information contained in the feature-engineered dataset. Post-return information removed during the earlier preprocessing stage is not reintroduced by this notebook.
 
 ---
 
@@ -123,11 +124,11 @@ The model uses information available from the feature-engineered dataset and doe
 
 XGBoost is a gradient-boosting ensemble learning method based on decision trees.
 
-The trees are constructed sequentially, with subsequent trees helping to improve the predictions of the previous trees.
+The trees are constructed sequentially, with subsequent trees helping to improve the predictions of previous trees.
 
 XGBoost was selected as Model 2 because it is suitable for structured tabular data and can model complex, non-linear relationships between customer, product, transaction and engineered order characteristics.
 
-Using XGBoost as Model 2 also provides a second tree-based approach that can be evaluated using the same feature-engineered dataset and train/test methodology as Model 1.
+Using XGBoost as Model 2 also provides a second tree-based model that can be evaluated using the same feature-engineered dataset and train/test methodology as Model 1.
 
 ---
 
@@ -147,9 +148,16 @@ X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
     test_size=0.20,
-    random_state=42,
+    random_state=RANDOM_STATE,
     stratify=y
 )
+```
+
+The notebook uses:
+
+```text
+TEST_SIZE = 0.20
+RANDOM_STATE = 42
 ```
 
 A stratified split is used so that the proportion of returned and non-returned orders is approximately maintained in both the training and testing datasets.
@@ -162,7 +170,7 @@ The same 80/20 stratified approach is used for Random Forest and XGBoost to supp
 
 ## 6. Feature Type Identification
 
-The notebook identifies numerical and categorical features after the train/test split.
+The notebook identifies numerical and categorical features using the training feature matrix.
 
 Numerical features are identified using:
 
@@ -176,7 +184,7 @@ Categorical features are identified using:
 X_train.select_dtypes(exclude=np.number)
 ```
 
-Separate feature inventories are displayed in the notebook.
+The notebook displays separate inventories for the numerical and categorical features.
 
 This allows different preprocessing methods to be applied according to feature type.
 
@@ -188,7 +196,7 @@ The XGBoost model uses a scikit-learn `ColumnTransformer` containing separate nu
 
 The preprocessing is included inside the complete modelling pipeline.
 
-This ensures that preprocessing is fitted using the training data and then applied consistently during inference.
+This ensures that the preprocessing steps are fitted as part of the training pipeline and then applied consistently when predictions are generated for the testing data.
 
 ### 7.1 Numerical Features
 
@@ -206,12 +214,17 @@ The numerical pipeline uses:
 
 ```python
 SimpleImputer(strategy="median")
+```
+
+and:
+
+```python
 StandardScaler()
 ```
 
-Median imputation replaces missing numerical values using the median calculated from the training data.
+Median imputation replaces missing numerical values using the median calculated during fitting.
 
-`StandardScaler` standardises the numerical variables.
+`StandardScaler` standardises the numerical feature values.
 
 ### 7.2 Categorical Features
 
@@ -229,16 +242,25 @@ The categorical pipeline uses:
 
 ```python
 SimpleImputer(strategy="most_frequent")
+```
+
+and:
+
+```python
 OneHotEncoder(handle_unknown="ignore")
 ```
 
-`handle_unknown="ignore"` ensures that unseen categories encountered during inference do not cause prediction errors.
+`handle_unknown="ignore"` ensures that categories not observed during fitting do not cause encoding errors when predictions are generated.
 
 ---
 
 ## 8. Complete Preprocessing and Model Pipeline
 
-The preprocessing and XGBoost classifier are combined into a single scikit-learn pipeline.
+The numerical and categorical preprocessing pipelines are combined using a `ColumnTransformer`.
+
+The resulting preprocessing component is then combined with the XGBoost classifier in a single scikit-learn `Pipeline`.
+
+The overall workflow is:
 
 ```text
 Input Features
@@ -248,7 +270,7 @@ ColumnTransformer
         ├───────────────────┐
         ▼                   ▼
     Numerical           Categorical
-     Pipeline             Pipeline
+     Pipeline              Pipeline
         │                   │
         ▼                   ▼
 Median Imputation   Most-Frequent Imputation
@@ -281,7 +303,7 @@ model_pipeline = Pipeline(
 )
 ```
 
-Keeping preprocessing and modelling inside one pipeline ensures that the same transformations are applied consistently during training and inference.
+Keeping preprocessing and modelling inside one pipeline ensures that the same transformations are applied consistently during model training and test-set prediction.
 
 ---
 
@@ -316,7 +338,7 @@ xgboost = XGBClassifier(
     reg_lambda=1.0,
     objective="binary:logistic",
     eval_metric="logloss",
-    random_state=42,
+    random_state=RANDOM_STATE,
     n_jobs=-1
 )
 ```
@@ -339,7 +361,7 @@ xgboost = XGBClassifier(
 
 ### Feature Subsampling
 
-`colsample_bytree=0.80` uses 80% of the available features for each tree.
+`colsample_bytree=0.80` uses 80% of the available input features for each tree.
 
 ### Minimum Child Weight
 
@@ -363,13 +385,13 @@ xgboost = XGBClassifier(
 
 ### Number of Jobs
 
-`n_jobs=-1` allows parallel processing using the available CPU cores.
+`n_jobs=-1` allows XGBoost to use the available CPU cores for parallel processing.
 
 ---
 
 ## 10. Model Training
 
-The complete pipeline is trained using:
+The complete modelling pipeline is trained using:
 
 ```python
 model_pipeline.fit(
@@ -390,15 +412,15 @@ XGBoost Training
 Trained Model Pipeline
 ```
 
-The testing data remains separate until inference and evaluation.
+The testing data remains separate until the prediction and evaluation stages.
 
-The notebook displays a training summary confirming that the model has completed training.
+The notebook displays a training summary containing the model name, number of training rows, number of input features and training status.
 
 ---
 
-## 11. Inference
+## 11. Test-Set Prediction
 
-After training, the model generates predictions for the unseen testing dataset:
+After training, the model generates predictions for the held-out testing dataset:
 
 ```text
 X_test
@@ -432,7 +454,7 @@ y_probability = (
 )
 ```
 
-The probability represents the estimated probability of the positive class:
+The probability represents the model's estimated probability of the positive class:
 
 ```text
 Returned
@@ -492,13 +514,24 @@ F1-score combines precision and recall into a single measure.
 
 ROC-AUC measures the model's ability to distinguish between returned and non-returned orders across different classification thresholds.
 
-The ROC-AUC calculation uses the predicted return probabilities.
+The ROC-AUC calculation uses the predicted return probabilities generated from the test data.
 
 ---
 
 ## 14. Classification Report
 
-The notebook generates a classification report containing:
+The notebook generates a classification report using:
+
+```python
+classification_report(
+    y_test,
+    y_pred,
+    output_dict=True,
+    zero_division=0
+)
+```
+
+The classification report contains:
 
 ```text
 Precision
@@ -507,14 +540,14 @@ F1-Score
 Support
 ```
 
-The classes are displayed as:
+The classes are labelled as:
 
 ```text
 Not Returned
 Returned
 ```
 
-Aggregate results include:
+The report also includes:
 
 ```text
 Accuracy
@@ -522,13 +555,24 @@ Macro Average
 Weighted Average
 ```
 
-The classification report is converted into a pandas DataFrame for inspection.
+The classification report is converted into a pandas DataFrame for display and inspection.
+
+The classification report is **not separately saved to a CSV file** by the notebook.
 
 ---
 
 ## 15. Confusion Matrix
 
-The notebook calculates a confusion matrix containing:
+The notebook calculates a confusion matrix using:
+
+```python
+cm = confusion_matrix(
+    y_test,
+    y_pred
+)
+```
+
+The four outcomes are:
 
 ```text
 True Negatives
@@ -546,21 +590,49 @@ These outcomes represent:
 | False Negative | Predicted Not Returned when actually Returned |
 | True Positive  | Correctly predicted Returned                  |
 
-A confusion-matrix heatmap is also generated.
+The notebook creates a heatmap visualisation of the confusion matrix using Seaborn.
 
-The saved visualisation is:
+The confusion matrix uses the labels:
+
+```text
+Not Returned
+Returned
+```
+
+---
+
+## 16. Confusion Matrix Visualisation
+
+The notebook saves the XGBoost confusion matrix as:
 
 ```text
 visualisations/model2_xgboost_confusion_matrix.png
 ```
 
-The notebook also displays a summary table containing the four confusion-matrix outcomes.
+The image is generated using:
+
+```python
+plt.savefig(
+    CONFUSION_MATRIX_PATH,
+    dpi=300,
+    bbox_inches="tight"
+)
+```
+
+The visualisation includes:
+
+* Actual class labels on the y-axis
+* Predicted class labels on the x-axis
+* Confusion-matrix counts
+* A heatmap representation of the four classification outcomes
+
+The notebook also displays a summary table containing the True Negative, False Positive, False Negative and True Positive counts.
 
 ---
 
-## 16. Evaluation Metrics Output
+## 17. Evaluation Metrics Output
 
-The following evaluation metrics are stored:
+The notebook calculates the following five evaluation metrics:
 
 ```text
 accuracy
@@ -570,13 +642,13 @@ f1_score
 roc_auc
 ```
 
-They are saved to:
+These metrics are stored in a pandas DataFrame and saved to:
 
 ```text
 experimental_results/model2_xgboost_metrics.csv
 ```
 
-The saved CSV contains:
+The saved CSV contains the following columns:
 
 ```text
 model
@@ -587,15 +659,17 @@ f1_score
 roc_auc
 ```
 
-The model name stored in the metrics output is:
+The model name stored in the output is:
 
 ```text
 XGBoost
 ```
 
+The classification report and confusion matrix are displayed during notebook execution but are not separately written to CSV files.
+
 ---
 
-## 17. Trained Model Output
+## 18. Trained Model Output
 
 The complete trained preprocessing and XGBoost pipeline is saved using `joblib`.
 
@@ -613,34 +687,31 @@ Preprocessing
 XGBoost Classifier
 ```
 
-This allows the complete trained pipeline to be reused during future inference.
+Saving the complete pipeline preserves the preprocessing and model components together so that the same transformations can be reused when the saved pipeline is loaded for future prediction.
 
 ---
 
-## 18. Visualisation Output
+## 19. Project Paths and Output Folders
 
-The Model 2 notebook generates and saves a confusion matrix visualisation.
+The notebook defines the following project paths:
 
-The output file is:
+| Component             | Path                                                 |
+| --------------------- | ---------------------------------------------------- |
+| Input Dataset         | `data/processed/returns_features.csv`                |
+| Model Output          | `models/model2_xgboost.joblib`                       |
+| Metrics Output        | `experimental_results/model2_xgboost_metrics.csv`    |
+| Visualisations Folder | `visualisations/`                                    |
+| Confusion Matrix      | `visualisations/model2_xgboost_confusion_matrix.png` |
 
-```text
-visualisations/model2_xgboost_confusion_matrix.png
-```
+The required output directories are created automatically if they do not already exist.
 
-The image contains labelled axes for:
-
-```text
-Not Returned
-Returned
-```
-
-and displays the classification counts in the matrix.
+The notebook also displays a path summary containing the resolved full paths.
 
 ---
 
-## 19. Notebook Associated With Model 2
+## 20. Notebook Associated With Model 2
 
-The notebook responsible for Model 2 **training and inference** is:
+The notebook responsible for Model 2 training, test-set prediction and evaluation is:
 
 ```text
 notebooks/04_Model2_XGBoost.ipynb
@@ -648,11 +719,11 @@ notebooks/04_Model2_XGBoost.ipynb
 
 This is the primary executable file for Model 2.
 
-No separate Python training script is required for the documented implementation because the complete training and inference workflow is contained within this notebook.
+The complete workflow for Model 2 is contained within this notebook.
 
 ---
 
-## 20. Notebook Execution Order
+## 21. Notebook Execution Order
 
 Model 2 depends on the outputs of the preceding preprocessing and feature-engineering notebooks.
 
@@ -666,15 +737,21 @@ The recommended execution order is:
 04_Model2_XGBoost.ipynb
 ```
 
-### Notebook 1
+### Notebook 1 — Preprocessing
 
 ```text
 notebooks/01_Preprocessing.ipynb
 ```
 
-Prepares the cleaned dataset.
+Prepares the cleaned and preprocessed dataset.
 
-### Notebook 2
+The output is:
+
+```text
+data/processed/returns_preprocessed.csv
+```
+
+### Notebook 2 — Feature Engineering
 
 ```text
 notebooks/02_FeatureEngineering.ipynb
@@ -686,23 +763,34 @@ Creates the feature-engineered dataset:
 data/processed/returns_features.csv
 ```
 
-### Notebook 4
+### Notebook 4 — Model 2 XGBoost
 
 ```text
 notebooks/04_Model2_XGBoost.ipynb
 ```
 
-Loads the feature-engineered dataset and trains, evaluates and saves Model 2.
+Loads the feature-engineered dataset and:
+
+* Separates features and target
+* Performs the train/test split
+* Identifies feature types
+* Applies preprocessing
+* Trains XGBoost
+* Generates test-set predictions
+* Evaluates the model
+* Saves the model
+* Saves the evaluation metrics
+* Saves the confusion matrix visualisation
 
 ---
 
-## 21. How to Run Model 2
+## 22. How to Run Model 2
 
 Model 2 should be executed from the repository root.
 
 ### Step 1 — Install Dependencies
 
-Install the project dependencies:
+Install the project dependencies using the project's requirements file:
 
 ```bash
 pip install -r requirements.txt
@@ -751,34 +839,40 @@ Run the cells from top to bottom.
 The notebook will:
 
 1. Define the project paths.
-2. Load `returns_features.csv`.
-3. Validate the `Return_Status` target.
-4. Separate features and target.
-5. Create the 80/20 stratified train/test split.
-6. Verify the target distribution.
-7. Identify numerical and categorical features.
-8. Configure numerical preprocessing.
-9. Configure categorical preprocessing.
-10. Combine the preprocessing pipelines.
-11. Configure the XGBoost classifier.
-12. Build the complete modelling pipeline.
-13. Train the XGBoost model.
-14. Generate test-set class predictions.
-15. Generate return probabilities.
-16. Display a prediction preview.
-17. Calculate evaluation metrics.
-18. Generate the classification report.
-19. Generate the confusion matrix.
-20. Save the evaluation metrics.
-21. Save the trained model pipeline.
-22. Perform final validation checks.
-23. Display the Model 2 completion summary.
+2. Create the required output folders.
+3. Display the path summary.
+4. Load `returns_features.csv`.
+5. Validate the `Return_Status` target.
+6. Separate features and target.
+7. Create the 80/20 stratified train/test split.
+8. Display the split summary.
+9. Verify the target distribution after the split.
+10. Identify numerical and categorical features.
+11. Configure numerical preprocessing.
+12. Configure categorical preprocessing.
+13. Combine the preprocessing pipelines.
+14. Configure the XGBoost classifier.
+15. Build the complete modelling pipeline.
+16. Train the XGBoost model.
+17. Generate test-set class predictions.
+18. Generate return probabilities.
+19. Display a prediction preview.
+20. Calculate evaluation metrics.
+21. Generate the classification report.
+22. Generate and display the confusion matrix.
+23. Save the confusion matrix visualisation.
+24. Save the evaluation metrics.
+25. Save the trained model pipeline.
+26. Display the model save report.
+27. Display the final model summary.
+28. Perform final validation checks.
+29. Display the Model 2 completion summary.
 
 ---
 
-## 22. Model 2 Outputs
+## 23. Model 2 Outputs
 
-After successful execution, the following files are produced:
+After successful execution, the following output files are produced.
 
 ### Trained Model
 
@@ -798,53 +892,81 @@ experimental_results/model2_xgboost_metrics.csv
 visualisations/model2_xgboost_confusion_matrix.png
 ```
 
-The notebook also displays:
+The notebook also displays the following intermediate and final outputs:
 
 ```text
 Path Summary
+
 Feature Target Summary
+
 Split Summary
+
 Split Target Report
+
 Feature Type Summary
+
 Numerical Features
+
 Categorical Features
+
 Numerical Preprocessing
+
 Categorical Preprocessing
+
 Combined Preprocessing Summary
+
 Model Configuration
+
 Pipeline Summary
+
 Training Summary
+
 Prediction Summary
+
 Prediction Preview
+
 Metrics Table
+
 Classification Report
+
 Confusion Matrix
+
 Confusion Matrix Summary
+
+Confusion Matrix Visualisation
+
 Model Save Report
+
 Final Model Summary
+
 Validation Checks
+
 Completion Summary
 ```
 
 ---
 
-## 23. Final Validation
+## 24. Final Model Validation
 
-The notebook performs final validation checks to confirm that the Model 2 workflow completed successfully.
-
-The checks include:
+The notebook performs final validation checks covering:
 
 ```text
 Training completed
+
 Test predictions generated
+
 Prediction probabilities generated
+
 Accuracy calculated
+
 ROC-AUC calculated
+
 Metrics file saved
+
 Model file saved
 ```
 
-Each validation check is displayed with either:
+Each validation check is displayed with a result and a corresponding status:
 
 ```text
 PASS
@@ -856,11 +978,11 @@ or:
 CHECK
 ```
 
-This provides confirmation that the expected training, inference, evaluation and output-generation steps have been completed.
+The validation output therefore provides a programmatic check of the main training, prediction, evaluation and file-saving steps.
 
 ---
 
-## 24. Model 2 Workflow
+## 25. Model 2 Workflow
 
 ```text
 returns_features.csv
@@ -880,7 +1002,7 @@ Preprocessing Pipeline
         ├───────────────────┐
         ▼                   ▼
     Numerical           Categorical
-     Pipeline             Pipeline
+     Pipeline              Pipeline
         │                   │
         ▼                   ▼
 Median Imputation   Most-Frequent Imputation
@@ -896,7 +1018,7 @@ StandardScaler      One-Hot Encoding
             Model Training
                   │
                   ▼
-             Test Inference
+          Test-Set Prediction
                   │
           ┌───────┴────────┐
           ▼                ▼
@@ -904,7 +1026,7 @@ StandardScaler      One-Hot Encoding
           │                │
           └───────┬────────┘
                   ▼
-        Performance Evaluation
+         Performance Evaluation
                   │
        ┌──────────┼──────────────┐
        ▼          ▼              ▼
@@ -912,50 +1034,54 @@ StandardScaler      One-Hot Encoding
                Matrix          Report
                   │
                   ▼
-          Saved Model Results
-          │              │
-          ▼              ▼
-     Metrics CSV     Model Pipeline
+          Saved Model and Results
+             │              │
+             ▼              ▼
+        Metrics CSV    Model Pipeline
+             │
+             ▼
+       Confusion Matrix PNG
 ```
 
 ---
 
-## 25. Model 2 Summary
+## 26. Model 2 Summary
 
-| Component                     | Implementation                                       |
-| ----------------------------- | ---------------------------------------------------- |
-| Model                         | XGBoost Classifier                                   |
-| Training / Inference Notebook | `notebooks/04_Model2_XGBoost.ipynb`                  |
-| Input Dataset                 | `data/processed/returns_features.csv`                |
-| Target                        | `Return_Status`                                      |
-| Classes                       | `0 = Not Returned`, `1 = Returned`                   |
-| Train/Test Split              | 80% / 20%                                            |
-| Split Method                  | Stratified                                           |
-| Random State                  | 42                                                   |
-| Numerical Imputation          | Median                                               |
-| Numerical Scaling             | `StandardScaler`                                     |
-| Categorical Imputation        | Most Frequent                                        |
-| Categorical Encoding          | `OneHotEncoder`                                      |
-| Number of Estimators          | 300                                                  |
-| Maximum Depth                 | 6                                                    |
-| Learning Rate                 | 0.05                                                 |
-| Subsample                     | 0.80                                                 |
-| Feature Subsampling           | 0.80                                                 |
-| Minimum Child Weight          | 2                                                    |
-| L2 Regularisation             | 1.0                                                  |
-| Objective                     | `binary:logistic`                                    |
-| Evaluation Metric             | `logloss`                                            |
-| Evaluation                    | Accuracy, Precision, Recall, F1-Score, ROC-AUC       |
-| Additional Evaluation         | Classification Report, Confusion Matrix              |
-| Model Output                  | `models/model2_xgboost.joblib`                       |
-| Metrics Output                | `experimental_results/model2_xgboost_metrics.csv`    |
-| Visualisation Output          | `visualisations/model2_xgboost_confusion_matrix.png` |
+| Component                      | Implementation                                       |
+| ------------------------------ | ---------------------------------------------------- |
+| Model                          | XGBoost Classifier                                   |
+| Training / Prediction Notebook | `notebooks/04_Model2_XGBoost.ipynb`                  |
+| Input Dataset                  | `data/processed/returns_features.csv`                |
+| Target                         | `Return_Status`                                      |
+| Classes                        | `0 = Not Returned`, `1 = Returned`                   |
+| Train/Test Split               | 80% / 20%                                            |
+| Split Method                   | Stratified                                           |
+| Random State                   | 42                                                   |
+| Numerical Imputation           | Median                                               |
+| Numerical Scaling              | `StandardScaler`                                     |
+| Categorical Imputation         | Most Frequent                                        |
+| Categorical Encoding           | `OneHotEncoder`                                      |
+| Unknown Categories             | `handle_unknown="ignore"`                            |
+| Number of Estimators           | 300                                                  |
+| Maximum Depth                  | 6                                                    |
+| Learning Rate                  | 0.05                                                 |
+| Subsample                      | 0.80                                                 |
+| Feature Subsampling            | 0.80                                                 |
+| Minimum Child Weight           | 2                                                    |
+| L2 Regularisation              | 1.0                                                  |
+| Objective                      | `binary:logistic`                                    |
+| Evaluation Metric              | `logloss`                                            |
+| Evaluation Outputs             | Accuracy, Precision, Recall, F1-Score, ROC-AUC       |
+| Additional Evaluation          | Classification Report, Confusion Matrix              |
+| Model Output                   | `models/model2_xgboost.joblib`                       |
+| Metrics Output                 | `experimental_results/model2_xgboost_metrics.csv`    |
+| Visualisation Output           | `visualisations/model2_xgboost_confusion_matrix.png` |
 
 ---
 
-## 26. Relationship to the Project Workflow
+## 27. Relationship to the Project Workflow
 
-Model 2 is the fourth stage of the predictive modelling workflow:
+Model 2 forms part of the predictive modelling workflow following preprocessing and feature engineering:
 
 ```text
 Raw Dataset
@@ -985,3 +1111,5 @@ XGBoost Model
 ```
 
 Model 2 therefore uses the output generated by the preceding data-preparation and feature-engineering stages.
+
+The resulting trained pipeline, evaluation metrics and confusion matrix visualisation are saved as project outputs for subsequent analysis and comparison with the other predictive model.
