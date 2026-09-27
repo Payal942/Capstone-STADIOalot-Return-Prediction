@@ -14,6 +14,7 @@ A Data Science capstone project focused on developing predictive demand forecast
 4. [Data Request](#data-request)
 5. [Literature Review](#literature-review)
 6. [Modelling](#modelling)
+   - [Requirements](#requirements)
    - [Data Preprocessing](#data-preprocessing)
    - [Feature Engineering](#feature-engineering)
    - [Model 1 – Random Forest](#model-1--random-forest)
@@ -22,7 +23,6 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Model 1 Performance Evaluation](#model-1-performance-evaluation)
    - [Model 2 Performance Evaluation](#model-2-performance-evaluation)
    - [Model Comparison](#model-comparison)
-   - [Requirements](#requirements)
 8. [Client Recommendation](#client-recommendation)
 9. [Repository Structure](#repository-structure)
 10. [RAAIDD Log](#raaidd-log)
@@ -119,6 +119,31 @@ The target variable used for prediction is `Return_Status`, where:
 - `Not Returned = 0`
 
 Post-order information that would not be available at the prediction point is excluded to reduce the risk of data leakage.
+
+---
+
+## Requirements
+
+The Python packages required to run the preprocessing, feature engineering and modelling notebooks/scripts are provided in the **`experimental_setup/`** folder.
+
+The requirements file is located at:
+
+`experimental_setup/requirements.txt`
+
+The requirements file contains the dependencies required for the project environment, including the libraries used for data processing, preprocessing, machine learning, model persistence and evaluation.
+
+To install the project dependencies, run:
+
+```bash
+pip install -r experimental_setup/requirements.txt
+```
+
+The `experimental_setup/` folder also contains:
+
+* `requirements.txt` – Python libraries and package versions required for the project.
+* `configuration.md` – Experimental configuration, modelling settings and other relevant setup information.
+* `README.md` – Documentation describing the project environment and experimental setup.
+
 
 ## Data Preprocessing
 
@@ -389,28 +414,6 @@ For the complete model comparison methodology and statistical analysis, see: [Co
 **McNemar's test:**
 
 `experimental_results/mcnemar_test.csv`
-
-## Requirements
-
-The Python packages required to run the preprocessing, feature engineering and modelling notebooks/scripts are provided in the **`experimental_setup/`** folder.
-
-The requirements file is located at:
-
-`experimental_setup/requirements.txt`
-
-The requirements file contains the dependencies required for the project environment, including the libraries used for data processing, preprocessing, machine learning, model persistence and evaluation.
-
-To install the project dependencies, run:
-
-```bash
-pip install -r experimental_setup/requirements.txt
-```
-
-The `experimental_setup/` folder also contains:
-
-* `requirements.txt` – Python libraries and package versions required for the project.
-* `configuration.md` – Experimental configuration, modelling settings and other relevant setup information.
-* `README.md` – Documentation describing the project environment and experimental setup.
 
 ---
 
