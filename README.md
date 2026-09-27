@@ -81,6 +81,8 @@ The complete data request, including **column names, data types, examples and ad
 
 **Data Request Document:** `docs/Data_Request.pdf`
 
+[Data_Request.pdf](docs/Data_Request.pdf)
+
 ---
 
 ## Literature Review
@@ -127,18 +129,16 @@ The preprocessing documentation provides the full explanation of the preprocessi
 **Preprocessing documentation:**  
 `docs/Preprocessing.MD`
 
+For instructions on running the preprocessing workflow and understanding the preprocessing techniques used, see: [Preprocessing.MD](docs/Preprocessing.MD)
+
 **Preprocessing notebook/script:**  
-`notebooks/preprocessing.ipynb`
+`notebooks/01_preprocessing.ipynb`
 
 **Input dataset:**  
 `data/raw/ecommerce_returns_synthetic_data.csv`
 
 **Processed dataset:**  
 `data/processed/returns_preprocessed.csv`
-
-For instructions on running the preprocessing workflow and understanding the preprocessing techniques used, see:
-
-[Preprocessing.MD](docs/Preprocessing.MD)
 
 ## Feature Engineering
 
@@ -160,18 +160,16 @@ Identifier-like columns that do not provide meaningful predictive information ar
 **Feature Engineering documentation:**  
 `docs/FeatureEngineering.MD`
 
+For the complete feature engineering methodology and instructions for running the notebook/script, see: [FeatureEngineering.MD](docs/FeatureEngineering.MD)
+
 **Feature Engineering notebook/script:**  
-`notebooks/feature_engineering.ipynb`
+`notebooks/02_feature_engineering.ipynb`
 
 **Input:**  
 `data/processed/returns_preprocessed.csv`
 
 **Output:**  
 `data/processed/returns_features.csv`
-
-For the complete feature engineering methodology and instructions for running the notebook/script, see:
-
-[FeatureEngineering.MD](docs/FeatureEngineering.MD)
 
 ## Model 1 – Random Forest
 
@@ -199,18 +197,16 @@ The model is evaluated using:
 **Model 1 documentation:**  
 `docs/Model1.MD`
 
+For the complete Model 1 methodology, hyperparameters, training process and inference instructions, see: [Model1.MD](docs/Model1.MD)
+
 **Model 1 notebook/script:**  
-`notebooks/model1_random_forest.ipynb`
+`notebooks/03_model1_random_forest.ipynb`
 
 **Trained model:**  
 `models/model1_random_forest.joblib`
 
 **Model results:**  
 `experimental_results/model1_random_forest_metrics.csv`
-
-For the complete Model 1 methodology, hyperparameters, training process and inference instructions, see:
-
-[Model1.MD](docs/Model1.MD)
 
 ## Model 2 – XGBoost
 
@@ -244,18 +240,16 @@ The model is evaluated using:
 **Model 2 documentation:**  
 `docs/Model2.MD`
 
+For the complete Model 2 methodology, hyperparameters, training process and inference instructions, see: [Model2.MD](docs/Model2.MD)
+
 **Model 2 notebook/script:**  
-`notebooks/model2_xgboost.ipynb`
+`notebooks/04_model2_xgboost.ipynb`
 
 **Trained model:**  
 `models/model2_xgboost.joblib`
 
 **Model results:**  
 `experimental_results/model2_xgboost_metrics.csv`
-
-For the complete Model 2 methodology, hyperparameters, training process and inference instructions, see:
-
-[Model2.MD](docs/Model2.MD)
 
 ---
 
@@ -283,6 +277,8 @@ Bootstrap confidence intervals are calculated using 1,000 bootstrap samples and 
 
 `docs/Model1Performance.MD`
 
+The complete Model 1 performance methodology and results are documented in: [Model1Performance.MD](docs/Model1Performance.MD)
+
 **Model 1 Performance notebook:**
 
 `notebooks/05_Model1Performance.ipynb`
@@ -298,10 +294,6 @@ Bootstrap confidence intervals are calculated using 1,000 bootstrap samples and 
 **Bootstrap confidence intervals:**
 
 `experimental_results/model1_bootstrap_confidence_intervals.csv`
-
-The complete Model 1 performance methodology and results are documented in:
-
-[Model1Performance.MD](docs/Model1Performance.MD)
 
 ---
 
@@ -328,6 +320,8 @@ Bootstrap confidence intervals are calculated using 1,000 bootstrap samples and 
 
 `docs/Model2Performance.MD`
 
+The complete Model 2 performance methodology and results are documented in: [Model2Performance.MD](docs/Model2Performance.MD)
+
 **Model 2 Performance notebook:**
 
 `notebooks/06_Model2Performance.ipynb`
@@ -343,10 +337,6 @@ Bootstrap confidence intervals are calculated using 1,000 bootstrap samples and 
 **Bootstrap confidence intervals:**
 
 `experimental_results/model2_bootstrap_confidence_intervals.csv`
-
-The complete Model 2 performance methodology and results are documented in:
-
-[Model2Performance.MD](docs/Model2Performance.MD)
 
 ---
 
@@ -378,6 +368,8 @@ McNemar's test is used to compare the classification outcomes produced by the tw
 
 `docs/Comparison.MD`
 
+For the complete model comparison methodology and statistical analysis, see: [Comparison.MD](docs/Comparison.MD)
+
 **Model Comparison notebook:**
 
 `notebooks/07_Comparison.ipynb`
@@ -397,10 +389,6 @@ McNemar's test is used to compare the classification outcomes produced by the tw
 **McNemar's test:**
 
 `experimental_results/mcnemar_test.csv`
-
-For the complete model comparison methodology and statistical analysis, see:
-
-[Comparison.MD](docs/Comparison.MD)
 
 ## Requirements
 
