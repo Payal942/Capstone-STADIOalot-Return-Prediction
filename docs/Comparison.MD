@@ -38,16 +38,28 @@ The trained model is stored at:
 models/model1_random_forest.joblib
 ```
 
-Its performance notebook is:
+The Model 1 training notebook is:
 
 ```text
-notebooks/Model1Performance.ipynb
+05_Model1_RandomForest.ipynb
+```
+
+The Model 1 performance evaluation notebook is:
+
+```text
+05_Model1Performance.ipynb
 ```
 
 Its calculated performance metrics are stored at:
 
 ```text
 experimental_results/model1_random_forest_metrics.csv
+```
+
+Its bootstrap confidence intervals are stored at:
+
+```text
+experimental_results/model1_bootstrap_confidence_intervals.csv
 ```
 
 ---
@@ -62,16 +74,28 @@ The trained model is stored at:
 models/model2_xgboost.joblib
 ```
 
-Its performance notebook is:
+The Model 2 training notebook is:
 
 ```text
-notebooks/Model2Performance.ipynb
+06_Model2_XGBoost.ipynb
+```
+
+The Model 2 performance evaluation notebook is:
+
+```text
+06_Model2Performance.ipynb
 ```
 
 Its calculated performance metrics are stored at:
 
 ```text
 experimental_results/model2_xgboost_metrics.csv
+```
+
+Its bootstrap confidence intervals are stored at:
+
+```text
+experimental_results/model2_bootstrap_confidence_intervals.csv
 ```
 
 ---
@@ -81,7 +105,7 @@ experimental_results/model2_xgboost_metrics.csv
 The complete Model 1 versus Model 2 comparison is implemented in:
 
 ```text
-notebooks/Comparison.ipynb
+07_Comparison.ipynb
 ```
 
 The comparison notebook:
@@ -158,8 +182,8 @@ The following settings are used:
 | Setting          | Value           |
 | ---------------- | --------------- |
 | Train/Test Split | 80% / 20%       |
-| Test Size        | 0.20            |
-| Random State     | 42              |
+| Test Size        | `0.20`          |
+| Random State     | `42`            |
 | Stratification   | Yes             |
 | Target Variable  | `Return_Status` |
 
@@ -305,15 +329,15 @@ ROC-AUC is considered alongside the other classification metrics rather than bei
 
 The comparison notebook generates a side-by-side performance table containing:
 
-| Metric    | Model 1 — Random Forest | Model 2 — XGBoost | Difference | Better Model |
-| --------- | ----------------------: | ----------------: | ---------: | ------------ |
-| Accuracy  |              Calculated |        Calculated |    M2 − M1 | Calculated   |
-| Precision |              Calculated |        Calculated |    M2 − M1 | Calculated   |
-| Recall    |              Calculated |        Calculated |    M2 − M1 | Calculated   |
-| F1-Score  |              Calculated |        Calculated |    M2 − M1 | Calculated   |
-| ROC-AUC   |              Calculated |        Calculated |    M2 − M1 | Calculated   |
+| Metric    | Model 1 — Random Forest | Model 2 — XGBoost | Difference | Observed Higher Score |
+| --------- | ----------------------: | ----------------: | ---------: | --------------------- |
+| Accuracy  |              Calculated |        Calculated |    M2 − M1 | Calculated            |
+| Precision |              Calculated |        Calculated |    M2 − M1 | Calculated            |
+| Recall    |              Calculated |        Calculated |    M2 − M1 | Calculated            |
+| F1-Score  |              Calculated |        Calculated |    M2 − M1 | Calculated            |
+| ROC-AUC   |              Calculated |        Calculated |    M2 − M1 | Calculated            |
 
-The numerical values are generated automatically when `Comparison.ipynb` is executed.
+The numerical values are generated automatically when `07_Comparison.ipynb` is executed.
 
 The difference is calculated as:
 
@@ -324,14 +348,12 @@ Model 2 score − Model 1 score
 Therefore:
 
 ```text
-Positive difference → Model 2 has the higher score
-Negative difference → Model 1 has the higher score
-Zero difference → Equal score
+Positive difference → Model 2 has the higher observed score
+Negative difference → Model 1 has the higher observed score
+Zero difference → Equal observed score
 ```
 
-The `Better Model` column identifies the model with the higher value for that particular metric.
-
-This column describes the observed metric value only and does not by itself establish statistical significance.
+The comparison describes the observed metric values. Statistical significance is assessed separately using the bootstrap analysis and McNemar's test.
 
 ---
 
@@ -543,11 +565,11 @@ A 95% confidence interval is then calculated for each performance difference.
 
 The paired bootstrap results can be interpreted using the location of the confidence interval relative to zero.
 
-| Confidence Interval     | Interpretation                                                              |
-| ----------------------- | --------------------------------------------------------------------------- |
-| Entire interval above 0 | The observed difference provides evidence favouring Model 2 for that metric |
-| Entire interval below 0 | The observed difference provides evidence favouring Model 1 for that metric |
-| Interval includes 0     | The difference is uncertain based on the bootstrap interval                 |
+| Confidence Interval     | Interpretation                                              |
+| ----------------------- | ----------------------------------------------------------- |
+| Entire interval above 0 | The observed difference is positive for Model 2             |
+| Entire interval below 0 | The observed difference is negative for Model 2             |
+| Interval includes 0     | The difference is uncertain based on the bootstrap interval |
 
 The bootstrap analysis provides statistical evidence about the uncertainty of the observed metric differences.
 
@@ -623,7 +645,7 @@ p-value ≥ 0.05
     → Insufficient evidence of a statistically significant difference
 ```
 
-The actual p-value generated by `Comparison.ipynb` must be reported in the final analysis.
+The actual p-value generated by `07_Comparison.ipynb` must be reported in the final analysis.
 
 The p-value is not hard-coded in the notebook.
 
@@ -650,7 +672,7 @@ The comparison follows:
              Paired Comparison
 ```
 
-For example, if both models make predictions for the same 10,000 test orders, the prediction from Model 1 can be paired directly with the prediction from Model 2 for every order.
+For example, if both models make predictions for the same test orders, the prediction from Model 1 can be paired directly with the prediction from Model 2 for every order.
 
 This paired structure is what makes McNemar's test suitable for examining differences in classification error patterns.
 
@@ -729,13 +751,13 @@ experimental_results/model_comparison_metrics.csv
 
 The file contains:
 
-| Column                    | Description                          |
-| ------------------------- | ------------------------------------ |
-| `Metric`                  | Performance metric                   |
-| `Model 1 — Random Forest` | Model 1 score                        |
-| `Model 2 — XGBoost`       | Model 2 score                        |
-| `Difference`              | Model 2 score minus Model 1 score    |
-| `Better Model`            | Model with the higher observed score |
+| Column                    | Description                                          |
+| ------------------------- | ---------------------------------------------------- |
+| `Metric`                  | Performance metric                                   |
+| `Model 1 — Random Forest` | Model 1 score                                        |
+| `Model 2 — XGBoost`       | Model 2 score                                        |
+| `Difference`              | Model 2 score minus Model 1 score                    |
+| `Better Model`            | Model with the higher observed score for that metric |
 
 ---
 
@@ -809,8 +831,8 @@ The output contains:
 | Column                                | Description                                                  |
 | ------------------------------------- | ------------------------------------------------------------ |
 | `Test`                                | Statistical test used                                        |
-| `Model 1 Correct / Model 2 Incorrect` | Number of paired disagreements favouring Model 1             |
-| `Model 1 Incorrect / Model 2 Correct` | Number of paired disagreements favouring Model 2             |
+| `Model 1 Correct / Model 2 Incorrect` | Number of paired disagreements                               |
+| `Model 1 Incorrect / Model 2 Correct` | Number of paired disagreements                               |
 | `Both Correct`                        | Number of observations correctly classified by both models   |
 | `Both Incorrect`                      | Number of observations incorrectly classified by both models |
 | `Test Statistic`                      | McNemar test statistic                                       |
@@ -844,7 +866,7 @@ The final interpretation must use the actual results produced by the notebook.
 
 # 32. Important Interpretation Rule
 
-Model selection should not be based on a single numerical value without considering the broader evaluation results.
+Model comparison should not rely on a single numerical value without considering the broader evaluation results.
 
 For example:
 
@@ -896,7 +918,7 @@ The same dataset, saved model pipelines, test split and random seeds should prod
 
 ---
 
-# 34. Statistical Software
+# 34. Software Requirements
 
 The comparison notebook uses Python and the following libraries:
 
@@ -910,19 +932,25 @@ statsmodels
 joblib
 ```
 
-`statsmodels` is used for McNemar's test.
+The project's dependency file is located at:
 
-If `statsmodels` is not installed, it can be installed using:
+```text
+experimental_setup/requirements.txt
+```
+
+Dependencies can be installed using:
 
 ```bash
-pip install statsmodels
+pip install -r experimental_setup/requirements.txt
 ```
+
+`statsmodels` is used for McNemar's test.
 
 ---
 
 # 35. Comparison Output Files
 
-The following comparison files are generated:
+The following comparison files are generated by `07_Comparison.ipynb`:
 
 ```text
 experimental_results/
@@ -963,9 +991,11 @@ STADIOalot-Return-Prediction/
 │   └── model2_xgboost.joblib
 │
 ├── notebooks/
-│   ├── Model1Performance.ipynb
-│   ├── Model2Performance.ipynb
-│   └── Comparison.ipynb
+│   ├── 03_Model1_RandomForest.ipynb
+│   ├── 04_Model2_XGBoost.ipynb
+│   ├── 05_Model1Performance.ipynb
+│   ├── 06_Model2Performance.ipynb
+│   └── 07_Comparison.ipynb
 │
 ├── experimental_results/
 │   ├── model1_random_forest_metrics.csv
@@ -977,9 +1007,14 @@ STADIOalot-Return-Prediction/
 │   ├── model_metric_differences.csv
 │   └── mcnemar_test.csv
 │
+├── experimental_setup/
+│   └── requirements.txt
+│
 └── docs/
     └── Comparison.MD
 ```
+
+> **Note:** The notebook names above are the names used for the current Model 1 performance, Model 2 performance and comparison workflow. The training notebook names should match the actual filenames in the repository.
 
 ---
 
@@ -1002,7 +1037,10 @@ The complete comparison workflow is:
  model1_random_forest.joblib     model2_xgboost.joblib
                  |                         |
                  v                         v
-      Model1Performance.ipynb     Model2Performance.ipynb
+  03_Model1_RandomForest.ipynb     04_Model2_XGBoost.ipynb
+                 |                         |
+                 v                         v
+  05_Model1Performance.ipynb      06_Model2Performance.ipynb
                  |                         |
                  v                         v
  model1_random_forest_metrics.csv model2_xgboost_metrics.csv
@@ -1010,7 +1048,7 @@ The complete comparison workflow is:
                  +------------+------------+
                               |
                               v
-                    Comparison.ipynb
+                    07_Comparison.ipynb
                               |
           +-------------------+-------------------+
           |                   |                   |
@@ -1020,7 +1058,7 @@ The complete comparison workflow is:
           |                   +-- Bootstrap       +-- Performance Chart
           |                   +-- Paired Bootstrap+-- ROC Curves
           |                   +-- McNemar         +-- Confusion Matrices
-          |                   | 
+          |                   |
           +-------------------+-------------------+
                               |
                               v
@@ -1043,52 +1081,104 @@ metrics.csv            differences.csv
 
 The recommended execution order is:
 
-## Step 1 — Model 1 Performance
+## Step 1 — Train Model 1
 
 Open:
 
 ```text
-notebooks/Model1Performance.ipynb
+03_Model1_RandomForest.ipynb
 ```
 
 Run all cells.
 
-The notebook should generate:
+The notebook saves the trained Random Forest pipeline and its performance metrics.
+
+The main outputs are:
+
+```text
+models/model1_random_forest.joblib
+```
+
+and:
 
 ```text
 experimental_results/model1_random_forest_metrics.csv
 ```
 
-and the associated Model 1 bootstrap results.
-
 ---
 
-## Step 2 — Model 2 Performance
+## Step 2 — Evaluate Model 1
 
 Open:
 
 ```text
-notebooks/Model2Performance.ipynb
+05_Model1Performance.ipynb
 ```
 
 Run all cells.
 
-The notebook should generate:
+The notebook evaluates the saved Random Forest pipeline and produces:
+
+```text
+experimental_results/model1_bootstrap_confidence_intervals.csv
+```
+
+The notebook does not retrain Model 1.
+
+---
+
+## Step 3 — Train Model 2
+
+Open:
+
+```text
+04_Model2_XGBoost.ipynb
+```
+
+Run all cells.
+
+The notebook saves the trained XGBoost pipeline and its performance metrics.
+
+The main outputs are:
+
+```text
+models/model2_xgboost.joblib
+```
+
+and:
 
 ```text
 experimental_results/model2_xgboost_metrics.csv
 ```
 
-and the associated Model 2 bootstrap results.
-
 ---
 
-## Step 3 — Model Comparison
+## Step 4 — Evaluate Model 2
 
 Open:
 
 ```text
-notebooks/Comparison.ipynb
+06_Model2Performance.ipynb
+```
+
+Run all cells.
+
+The notebook evaluates the saved XGBoost pipeline and produces:
+
+```text
+experimental_results/model2_bootstrap_confidence_intervals.csv
+```
+
+The notebook does not retrain Model 2.
+
+---
+
+## Step 5 — Compare Model 1 and Model 2
+
+Open:
+
+```text
+07_Comparison.ipynb
 ```
 
 Run all cells.
@@ -1121,9 +1211,9 @@ The comparison implementation addresses the following:
 
 | Requirement                       | Evidence                                              |
 | --------------------------------- | ----------------------------------------------------- |
-| Performance of Model 1            | `Model1Performance.ipynb`                             |
-| Performance of Model 2            | `Model2Performance.ipynb`                             |
-| Comparison of Model 1 and Model 2 | `Comparison.ipynb`                                    |
+| Performance of Model 1            | `05_Model1Performance.ipynb`                          |
+| Performance of Model 2            | `06_Model2Performance.ipynb`                          |
+| Comparison of Model 1 and Model 2 | `07_Comparison.ipynb`                                 |
 | Accuracy                          | Calculated for both models                            |
 | Precision                         | Calculated for both models                            |
 | Recall                            | Calculated for both models                            |
@@ -1146,15 +1236,15 @@ The comparison implementation addresses the following:
 
 # 40. Final Evaluation Principle
 
-The final comparison should consider both predictive performance and statistical evidence.
+The final comparison should consider both predictive performance and statistical evidence. 
 
-F1-score provides a useful primary measure because it balances precision and recall.
+F1-score provides a useful primary measure as it balances precision and recall. 
 
-ROC-AUC provides an additional assessment of the models' ability to discriminate between returned and non-returned orders.
+ROC-AUC provides an additional assessment of the models' ability to discriminate between returned and non-returned orders. 
 
 Accuracy, precision, recall and the confusion matrices provide further information about classification performance and error types.
 
-Bootstrap confidence intervals provide information about uncertainty around the observed performance measures and their paired differences.
+Bootstrap confidence intervals provide information about uncertainty around the observed performance measures and their paired differences. 
 
 McNemar's test evaluates whether the paired classification error patterns differ statistically at:
 
@@ -1162,6 +1252,6 @@ McNemar's test evaluates whether the paired classification error patterns differ
 α = 0.05
 ```
 
-The final interpretation should therefore be based on the **actual numerical results generated by `Comparison.ipynb`**.
+The final interpretation should therefore be based on the **actual numerical results generated by `07_Comparison.ipynb`**.
 
 No model should be selected in advance. The reported interpretation should reflect the observed performance metrics, confidence intervals, confusion matrices and statistical test results produced when the notebook is executed.
