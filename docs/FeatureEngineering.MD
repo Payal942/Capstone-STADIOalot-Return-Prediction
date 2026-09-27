@@ -22,15 +22,13 @@ The notebook performs the following main tasks:
 * Creates temporal features
 * Removes the original `Order_Date` column after feature extraction
 * Identifies commercial variables
-* Creates estimated order gross value
-* Creates discount-related features
-* Creates customer age bands
+* Creates estimated order gross value when the required variables are available
+* Creates discount-related features when a discount variable is available
+* Creates customer age bands when an age variable is available
 * Identifies and removes identifier columns
 * Validates the `Return_Status` target
 * Generates a feature inventory
-* Generates a missing-value report
-* Generates final dataset summaries
-* Validates the final dataset
+* Performs final dataset validation
 * Saves the feature-engineered dataset
 
 ---
@@ -97,7 +95,7 @@ df = pd.read_csv(
 
 `Order_Date` was converted to a datetime during **Notebook 1 — Data Preprocessing**.
 
-When a Pandas DataFrame is exported to CSV, the CSV stores the date values however, does not retain Pandas' internal datetime data type.
+When the preprocessed DataFrame is exported to CSV, the CSV stores the date values but does not retain Pandas' internal datetime data type.
 
 Therefore, Notebook 2 uses:
 
@@ -107,7 +105,7 @@ parse_dates=["Order_Date"]
 
 when loading the CSV so that `Order_Date` is available as a datetime column for temporal feature extraction.
 
-No new date-cleaning operation is performed in Notebook 2.
+No new date-cleaning or date-conversion procedure is performed in Notebook 2.
 
 ---
 
@@ -146,9 +144,12 @@ The notebook determines the project root using:
 
 ```python
 ROOT = Path.cwd()
-```
 
-If the current working directory does not contain the `data` directory, the notebook checks the parent directory.
+if not (ROOT / "data").exists():
+    ROOT = ROOT.parent
+
+ROOT = ROOT.resolve()
+```
 
 The notebook then constructs the following paths:
 
@@ -173,7 +174,7 @@ The notebook displays a path table containing:
 
 ---
 
-# 6. Input Dataset Inspection
+## 6. Input Dataset Inspection
 
 After loading the preprocessed dataset, the notebook generates an input structure report.
 
@@ -187,11 +188,11 @@ The report contains:
 
 The notebook also displays the first five records of the input dataset.
 
-This provides a final inspection of the preprocessed data before feature creation begins.
+This provides an inspection of the preprocessed data before feature creation begins.
 
 ---
 
-# 7. Date Verification
+## 7. Date Verification
 
 The notebook expects the following date column:
 
@@ -233,21 +234,17 @@ A successfully verified column is reported as:
 Ready for feature extraction
 ```
 
-If the column is missing or does not have the expected datetime type, the notebook reports:
-
-```text
-CHECK
-```
+If the column is missing or does not have the expected datetime type, the notebook reports a `CHECK` status.
 
 ---
 
-# 8. Temporal Feature Engineering
+## 8. Temporal Feature Engineering
 
 Temporal features are created from the verified `Order_Date` column.
 
-The notebook extracts six features.
+The notebook creates six temporal features.
 
-## 8.1 Order Year
+### 8.1 Order Year
 
 Feature:
 
@@ -257,15 +254,13 @@ order_year
 
 The feature represents the calendar year of the order.
 
-The value is extracted using:
+It is extracted using:
 
 ```python
 df[column].dt.year
 ```
 
----
-
-## 8.2 Order Month
+### 8.2 Order Month
 
 Feature:
 
@@ -281,15 +276,13 @@ Values range from:
 1–12
 ```
 
-The value is extracted using:
+It is extracted using:
 
 ```python
 df[column].dt.month
 ```
 
----
-
-## 8.3 Order Day
+### 8.3 Order Day
 
 Feature:
 
@@ -305,15 +298,13 @@ Values range from:
 1–31
 ```
 
-The value is extracted using:
+It is extracted using:
 
 ```python
 df[column].dt.day
 ```
 
----
-
-## 8.4 Order Day of Week
+### 8.4 Order Day of Week
 
 Feature:
 
@@ -339,9 +330,7 @@ The encoding is:
 6 = Sunday
 ```
 
----
-
-## 8.5 Order Week of Year
+### 8.5 Order Week of Year
 
 Feature:
 
@@ -357,9 +346,7 @@ df[column].dt.isocalendar().week.astype(int)
 
 This represents the ISO week of the year.
 
----
-
-## 8.6 Order Weekend Indicator
+### 8.6 Weekend Indicator
 
 Feature:
 
@@ -384,7 +371,7 @@ and converts the result to integers.
 
 ---
 
-# 9. Temporal Feature Report
+## 9. Temporal Feature Report
 
 After creating the temporal features, the notebook generates a temporal-feature report.
 
@@ -394,7 +381,7 @@ The report records:
 * Feature created
 * Description
 
-For the current dataset, the expected features are:
+For the expected `Order_Date` column, the features are:
 
 ```text
 order_year
@@ -407,7 +394,7 @@ order_is_weekend
 
 ---
 
-# 10. Removal of Original Date Column
+## 10. Removal of Original Date Column
 
 After the temporal features have been created, the original verified date column is removed:
 
@@ -432,19 +419,17 @@ The removal report records:
 
 The derived temporal features are retained.
 
-This means the final modelling dataset contains the useful temporal information without retaining the original datetime column.
+Therefore, the final modelling dataset contains the extracted temporal information without retaining the original datetime column.
 
 ---
 
-# 11. Commercial Variable Detection
+## 11. Commercial Variable Detection
 
 The notebook creates a case-insensitive column lookup helper.
 
-This allows the notebook to search for alternative names for commercial variables.
+This allows the notebook to search for alternative names for commercial and customer variables.
 
-The lookup helper checks the following variables.
-
-## 11.1 Price
+### 11.1 Price
 
 Possible column names:
 
@@ -454,9 +439,7 @@ Price
 Unit_Price
 ```
 
----
-
-## 11.2 Quantity
+### 11.2 Quantity
 
 Possible column names:
 
@@ -466,9 +449,7 @@ Quantity
 Qty
 ```
 
----
-
-## 11.3 Discount
+### 11.3 Discount
 
 Possible column names:
 
@@ -478,9 +459,7 @@ Discount
 Discount_Rate
 ```
 
----
-
-## 11.4 Customer Age
+### 11.4 Customer Age
 
 Possible column names:
 
@@ -503,11 +482,11 @@ FOUND
 NOT FOUND
 ```
 
-The feature-engineering process is designed to continue when an optional variable is unavailable.
+The subsequent feature-creation steps are conditional on whether the required source variables are detected.
 
 ---
 
-# 12. Estimated Order Gross Value
+## 12. Estimated Order Gross Value
 
 If both a price and quantity column are detected, the notebook creates:
 
@@ -522,7 +501,7 @@ order_gross_value =
 Price × Quantity
 ```
 
-The relevant variables are first converted to numeric values using:
+The source variables are converted to numeric values using:
 
 ```python
 pd.to_numeric(
@@ -531,7 +510,7 @@ pd.to_numeric(
 )
 ```
 
-The feature therefore represents the estimated gross value of the order before discount.
+The feature therefore represents the estimated gross value of the order based on product price and order quantity.
 
 The notebook produces an order-value report showing:
 
@@ -539,19 +518,19 @@ The notebook produces an order-value report showing:
 * Formula
 * Status
 
-If the required price or quantity column is unavailable, the feature is not created.
+If either the required price or quantity column is unavailable, the feature is not created.
 
 ---
 
-# 13. Discount Feature Engineering
+## 13. Discount Feature Engineering
 
-If a discount column is detected, the notebook converts it to numeric values.
+If a discount column is detected, the notebook converts its values to numeric format.
 
 The notebook then determines whether the discount is represented as a percentage or as a fraction.
 
-## 13.1 Percentage Discount
+### 13.1 Percentage Discount
 
-If the median valid discount value is greater than `1`, the notebook assumes the values represent percentages.
+If the median valid discount value is greater than `1`, the notebook assumes that the values represent percentages.
 
 For example:
 
@@ -567,9 +546,7 @@ The conversion is:
 discount_fraction = discount / 100
 ```
 
----
-
-## 13.2 Fractional Discount
+### 13.2 Fractional Discount
 
 If the median valid discount value is not greater than `1`, the notebook treats the discount as an existing fraction.
 
@@ -583,9 +560,7 @@ For example:
 
 are retained as fractions.
 
----
-
-## 13.3 Discount Fraction
+### 13.3 Discount Fraction
 
 The resulting feature is:
 
@@ -593,7 +568,7 @@ The resulting feature is:
 discount_fraction
 ```
 
-The values are constrained to the logical range:
+The values are constrained to the range:
 
 ```text
 0 ≤ discount_fraction ≤ 1
@@ -610,7 +585,7 @@ using:
 
 ---
 
-# 14. Estimated Discount Amount
+## 14. Estimated Discount Amount
 
 If both a discount column and price column are available, the notebook creates:
 
@@ -625,13 +600,15 @@ discount_amount_est =
 Price × discount_fraction
 ```
 
-This represents the estimated monetary discount associated with the product price.
+This represents the estimated monetary discount based on the product price and discount fraction.
 
 The notebook records the created discount features in a discount report.
 
+If no discount variable is detected, the discount features are not created.
+
 ---
 
-# 15. Customer Age Bands
+## 15. Customer Age Bands
 
 If a suitable customer-age column is detected, the notebook converts the age values to numeric values and creates:
 
@@ -679,11 +656,11 @@ pd.cut(
 )
 ```
 
-The age-band feature allows the modelling stage to represent customer age as grouped categories.
+Values outside the defined bin range are not assigned an age band and therefore become missing for this feature.
 
 ---
 
-# 16. Age-Band Distribution
+## 16. Age-Band Distribution
 
 When `age_band` is successfully created, the notebook generates an age-distribution report.
 
@@ -697,9 +674,11 @@ The percentage is calculated relative to the total number of observations.
 
 This provides a summary of the customer-age groups represented in the dataset.
 
+If no suitable age column is detected, the notebook reports that the age-band distribution is unavailable.
+
 ---
 
-# 17. Identifier Detection
+## 17. Identifier Detection
 
 The notebook identifies columns that represent individual entities rather than generalisable predictive characteristics.
 
@@ -736,7 +715,7 @@ The notebook generates an identifier report containing:
 
 ---
 
-# 18. Identifier Removal
+## 18. Identifier Removal
 
 Detected identifier columns are removed using:
 
@@ -753,7 +732,7 @@ The notebook records:
 * Number of identifier columns removed
 * Columns after removal
 
-Identifiers are excluded as they generally represent individual or high-cardinality entities rather than generalisable behavioural characteristics.
+Identifiers are excluded because they represent individual or high-cardinality entities rather than generalisable predictive characteristics.
 
 Examples include:
 
@@ -765,11 +744,11 @@ Customer_ID
 Transaction_ID
 ```
 
-Removing these columns helps prevent the models from relying on observation-specific identifiers rather than meaningful predictive patterns.
+Removing these columns prevents the modelling dataset from directly using observation-specific identifiers as predictive variables.
 
 ---
 
-# 19. Target Validation
+## 19. Target Validation
 
 The target variable remains:
 
@@ -810,7 +789,7 @@ This ensures that the final dataset remains suitable for binary classification.
 
 ---
 
-# 20. Feature Inventory
+## 20. Feature Inventory
 
 The notebook generates a feature inventory for the final dataset.
 
@@ -822,37 +801,34 @@ For every column, the inventory records:
 * Missing values
 * Number of unique values
 
-This provides an overview of the variables available for subsequent modelling.
+The inventory therefore provides a summary of the variables available for subsequent modelling.
 
-The inventory includes both retained original variables and newly engineered features.
+It includes both retained original variables and newly engineered features.
 
 ---
 
-# 21. Missing-Value Analysis
+## 21. Missing-Value Reporting
 
-After feature engineering, the notebook generates a missing-value report.
+The feature inventory includes the number of missing values for every final feature.
 
-For each column, it calculates:
+Specifically, the following fields are reported:
 
 ```text
-Column
+Feature
+Data Type
 Missing Values
-Missing %
+Unique Values
 ```
 
-The report is sorted by the number of missing values in descending order.
+The notebook **does not calculate or display a separate `Missing %` column at this stage**.
 
-### Important
+It also does not perform general missing-value imputation.
 
-This notebook **does not perform general missing-value imputation**.
-
-The notebook reports remaining missing values but does not automatically replace them.
-
-Missing predictor values are handled later through the preprocessing pipelines associated with the machine-learning models.
+Remaining missing predictor values are therefore retained and are handled later through the preprocessing pipelines associated with the machine-learning models.
 
 ---
 
-# 22. Final Dataset Preview
+## 22. Final Dataset Preview
 
 The notebook displays the first ten records of the final feature-engineered dataset.
 
@@ -860,7 +836,7 @@ This provides a final visual inspection of the dataset before it is exported.
 
 ---
 
-# 23. Final Dataset Summary
+## 23. Final Dataset Summary
 
 The notebook generates a final summary containing:
 
@@ -877,7 +853,7 @@ This provides an overview of the feature-engineering outcome.
 
 ---
 
-# 24. Output Dataset
+## 24. Output Dataset
 
 The final feature-engineered dataset is:
 
@@ -885,13 +861,11 @@ The final feature-engineered dataset is:
 data/processed/returns_features.csv
 ```
 
-The dataset contains:
-
-### Retained modelling variables
-
-Original variables that remain after preprocessing and identifier removal.
+The dataset contains the original variables that remain after preprocessing and identifier removal, together with engineered features that could be created from the available source variables.
 
 ### Temporal features
+
+When `Order_Date` is successfully verified, the following features are created:
 
 ```text
 order_year
@@ -904,7 +878,7 @@ order_is_weekend
 
 ### Commercial features
 
-Where the required source variables are available:
+When the required source variables are available:
 
 ```text
 order_gross_value
@@ -914,7 +888,7 @@ discount_amount_est
 
 ### Customer age feature
 
-Where a customer-age variable is available:
+When a suitable age variable is available:
 
 ```text
 age_band
@@ -926,14 +900,14 @@ age_band
 Return_Status
 ```
 
-The final dataset does **not** contain:
+The final dataset does not contain:
 
-* Original verified date columns such as `Order_Date`
+* The original verified date column, such as `Order_Date`
 * Detected identifier columns
 
 ---
 
-# 25. Final Validation
+## 25. Final Validation
 
 Before completion, the notebook performs the following validation checks:
 
@@ -953,11 +927,11 @@ PASS
 CHECK
 ```
 
-The final validation therefore provides a quality-control checkpoint before the dataset is passed to the modelling stage.
+The final validation provides a quality-control checkpoint before the dataset is passed to the modelling stage.
 
 ---
 
-# 26. Feature-Engineering Workflow
+## 26. Feature-Engineering Workflow
 
 The complete workflow is:
 
@@ -1014,10 +988,7 @@ data/processed/returns_preprocessed.csv
           Feature Inventory
                 │
                 ▼
-       Missing-Value Analysis
-                │
-                ▼
-        Final Dataset Summary
+       Final Dataset Summary
                 │
                 ▼
           Final Validation
@@ -1031,9 +1002,9 @@ data/processed/returns_features.csv
 
 ---
 
-# 27. How to Use the Notebook
+## 27. How to Use the Notebook
 
-## Step 1 — Install Dependencies
+### Step 1 — Install Dependencies
 
 From the project root, install the required Python packages:
 
@@ -1041,9 +1012,7 @@ From the project root, install the required Python packages:
 pip install -r requirements.txt
 ```
 
----
-
-## Step 2 — Run Data Preprocessing
+### Step 2 — Run Data Preprocessing
 
 Before running feature engineering, execute:
 
@@ -1059,9 +1028,7 @@ This creates:
 data/processed/returns_preprocessed.csv
 ```
 
----
-
-## Step 3 — Open Feature Engineering
+### Step 3 — Open Feature Engineering
 
 Open:
 
@@ -1069,9 +1036,7 @@ Open:
 notebooks/02_FeatureEngineering.ipynb
 ```
 
----
-
-## Step 4 — Verify the Input File
+### Step 4 — Verify the Input File
 
 The notebook expects:
 
@@ -1081,9 +1046,7 @@ data/processed/returns_preprocessed.csv
 
 If the file cannot be found, the notebook raises a `FileNotFoundError`.
 
----
-
-## Step 5 — Run the Notebook
+### Step 5 — Run the Notebook
 
 Run all cells from beginning to end.
 
@@ -1097,19 +1060,19 @@ The notebook will:
 6. Create temporal features.
 7. Remove the original date column.
 8. Detect commercial variables.
-9. Create order-value features.
-10. Create discount features.
-11. Create customer age bands.
+9. Create order-value features where possible.
+10. Create discount features where possible.
+11. Create customer age bands where possible.
 12. Detect and remove identifiers.
 13. Validate `Return_Status`.
 14. Generate the feature inventory.
-15. Generate the missing-value report.
+15. Generate the final dataset summary.
 16. Validate the final dataset.
 17. Save `returns_features.csv`.
 
 ---
 
-# 28. Expected Output
+## 28. Expected Output
 
 After successful execution, the notebook creates:
 
@@ -1135,7 +1098,7 @@ COMPLETE
 
 ---
 
-# 29. Relationship to the Modelling Stage
+## 29. Relationship to the Modelling Stage
 
 The feature-engineered dataset produced by this notebook is used by the subsequent machine-learning modelling stage.
 
@@ -1163,17 +1126,17 @@ Machine Learning Modelling
     └── XGBoost
 ```
 
-The feature-engineering notebook therefore provides the final structured dataset used as the basis for model development.
+The feature-engineering notebook therefore provides the structured dataset used as the basis for model development.
 
 ---
 
-# 30. Summary
+## 30. Summary
 
 The **Feature Engineering** notebook transforms the preprocessed STADIOalot return dataset into a feature-engineered dataset suitable for machine-learning modelling.
 
-The notebook creates temporal features from `Order_Date`, calculates estimated order gross value, standardises discount information, estimates discount amounts, creates customer age bands, removes identifier columns, validates the target and performs final dataset-quality checks.
+The notebook creates temporal features from `Order_Date`, calculates estimated order gross value when price and quantity are available, standardises discount information when a discount variable is available, estimates discount amounts when both price and discount information are available, creates customer age bands when an age variable is available, removes identifier columns, validates the target and performs final dataset-quality checks.
 
-The notebook does not perform general missing-value imputation. Remaining missing predictor values are reported and are handled later by the modelling preprocessing pipelines.
+The notebook does not perform general missing-value imputation. Remaining missing predictor values are reported through the feature inventory and are handled later by the modelling preprocessing pipelines.
 
 The implementation is:
 
