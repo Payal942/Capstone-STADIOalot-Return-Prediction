@@ -7,16 +7,22 @@ Model 1 is a **Random Forest Classifier** developed to predict whether an STADIO
 The model uses the feature-engineered dataset produced by **Notebook 2 — Feature Engineering**. The modelling process includes:
 
 * Loading the feature-engineered dataset
-* Separating features and target
+* Separating the features and target variable
 * Creating an 80/20 stratified train/test split
 * Identifying numerical and categorical features
-* Applying preprocessing
-* Training the Random Forest classifier
-* Generating class predictions and return probabilities
+* Applying numerical and categorical preprocessing
+* Configuring the Random Forest classifier
+* Building a complete Scikit-learn modelling pipeline
+* Training the Random Forest model
+* Generating class predictions
+* Generating return probabilities
 * Evaluating model performance
-* Saving the trained model
+* Generating a classification report
+* Generating a confusion matrix
+* Saving the trained model pipeline
 * Saving the evaluation metrics
-* Generating and saving a confusion matrix
+* Saving the confusion matrix visualisation
+* Performing final validation checks
 
 The target variable is:
 
@@ -33,7 +39,7 @@ where:
 
 ---
 
-## 2. Model 1 Training and Inference File
+## 2. Model 1 Training and Inference Notebook
 
 The notebook responsible for Model 1 training and inference is:
 
@@ -50,7 +56,9 @@ The notebook trains the Random Forest model using the training portion of the fe
 ```text
 data/processed/returns_features.csv
         ↓
-80/20 Stratified Split
+Feature / Target Separation
+        ↓
+80/20 Stratified Train/Test Split
         ↓
 Training Data
         ↓
@@ -63,16 +71,18 @@ Trained Model Pipeline
 
 ### Inference
 
-After training, the notebook performs inference on the unseen testing dataset.
+After training, inference is performed on the unseen testing dataset.
 
-It generates:
+The notebook generates:
 
 ```text
 Class Predictions
 Return Probabilities
 ```
 
-The class prediction identifies whether the order is predicted to be returned, while the probability represents the estimated probability of the `Returned` class.
+The class prediction identifies whether an order is predicted as returned or not returned.
+
+The return probability is obtained using the probability associated with class `1`, representing the predicted probability of the **Returned** class.
 
 ---
 
@@ -90,7 +100,7 @@ This dataset is created by:
 notebooks/02_FeatureEngineering.ipynb
 ```
 
-The model target is:
+The target variable is:
 
 ```text
 Return_Status
@@ -99,7 +109,9 @@ Return_Status
 The feature matrix is created by removing the target:
 
 ```python
-X = df.drop(columns=["Return_Status"])
+X = df.drop(
+    columns=["Return_Status"]
+)
 ```
 
 The target is converted to integer values:
@@ -108,7 +120,9 @@ The target is converted to integer values:
 y = df["Return_Status"].astype(int)
 ```
 
-The remaining feature columns are used as predictor variables.
+The remaining columns in `X` are used as predictor variables.
+
+The Model 1 notebook therefore expects the input dataset to have already undergone the preprocessing and feature-engineering stages performed by the preceding notebooks.
 
 ---
 
@@ -116,22 +130,22 @@ The remaining feature columns are used as predictor variables.
 
 Random Forest is an ensemble learning method that combines multiple decision trees to perform classification.
 
-It was selected as Model 1 because e-commerce return behaviour can involve non-linear relationships between customer, product, transaction and engineered order characteristics.
+It was selected as Model 1 because e-commerce return behaviour may involve non-linear relationships between customer, product, transaction and engineered order characteristics.
 
-Random Forest also provides a suitable tree-based baseline for comparison with the second model, XGBoost.
+Random Forest also provides a tree-based model for comparison with **Model 2 — XGBoost**.
 
 ---
 
 ## 5. Train/Test Split
 
-The dataset is divided into:
+The feature-engineered dataset is divided into:
 
 ```text
 80% Training Data
 20% Testing Data
 ```
 
-The split is performed using:
+The split is implemented using:
 
 ```python
 X_train, X_test, y_train, y_test = train_test_split(
@@ -143,9 +157,21 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 ```
 
-A stratified split is used so that the proportion of returned and non-returned orders is maintained across the training and testing datasets.
+A **stratified split** is used so that the distribution of the target classes is maintained across the training and testing datasets.
 
-A fixed `random_state` of `42` makes the split reproducible.
+The following configuration is used:
+
+| Parameter      | Value |
+| -------------- | ----: |
+| `test_size`    |  0.20 |
+| `random_state` |    42 |
+| `stratify`     |   `y` |
+
+The fixed `random_state=42` makes the split reproducible.
+
+The notebook also produces a split summary showing the number of observations and percentage assigned to the full dataset, training set and testing set.
+
+A target-distribution report is also generated to display the percentage of `Not Returned` and `Returned` observations in the training and testing datasets.
 
 The same 80/20 stratified methodology is used for Model 2 to support consistent model comparison.
 
@@ -153,7 +179,7 @@ The same 80/20 stratified methodology is used for Model 2 to support consistent 
 
 ## 6. Feature Identification
 
-The notebook identifies numerical and categorical features using the training dataset.
+Numerical and categorical features are identified using the **training dataset**.
 
 Numerical features are identified using:
 
@@ -167,15 +193,25 @@ Categorical features are identified using:
 X_train.select_dtypes(exclude=np.number)
 ```
 
-This allows different preprocessing methods to be applied to each feature type.
+This allows separate preprocessing pipelines to be applied according to feature type.
+
+The notebook generates:
+
+* A feature-type summary
+* A numerical feature table
+* A categorical feature table
+
+The feature-type summary records the number of numerical, categorical and total input features.
 
 ---
 
 ## 7. Data Preprocessing
 
-The preprocessing is implemented using a scikit-learn `ColumnTransformer`.
+The preprocessing is implemented using a Scikit-learn `ColumnTransformer`.
 
-The preprocessing is part of the complete modelling pipeline, ensuring that the transformations used during training are also applied consistently during inference.
+The numerical and categorical preprocessing pipelines are combined before being passed to the Random Forest classifier.
+
+The preprocessing is included inside the complete modelling pipeline so that the transformations fitted during training are retained and reused during inference.
 
 ### 7.1 Numerical Features
 
@@ -194,7 +230,9 @@ numeric_pipeline = Pipeline(
     steps=[
         (
             "imputer",
-            SimpleImputer(strategy="median")
+            SimpleImputer(
+                strategy="median"
+            )
         ),
         (
             "scaler",
@@ -204,9 +242,17 @@ numeric_pipeline = Pipeline(
 )
 ```
 
-Median imputation replaces missing numerical values using the median calculated from the training data.
+### Median Imputation
 
-`StandardScaler` standardises numerical variables.
+`SimpleImputer(strategy="median")` replaces missing numerical values using the median calculated from the training data.
+
+### StandardScaler
+
+`StandardScaler` standardises numerical variables before they are passed to the Random Forest classifier.
+
+Although scaling is not generally required by tree-based models, it is retained here as part of the defined modelling preprocessing pipeline.
+
+---
 
 ### 7.2 Categorical Features
 
@@ -225,21 +271,89 @@ categorical_pipeline = Pipeline(
     steps=[
         (
             "imputer",
-            SimpleImputer(strategy="most_frequent")
+            SimpleImputer(
+                strategy="most_frequent"
+            )
         ),
         (
             "onehot",
-            OneHotEncoder(handle_unknown="ignore")
+            OneHotEncoder(
+                handle_unknown="ignore"
+            )
         )
     ]
 )
 ```
 
-`handle_unknown="ignore"` prevents errors when an unseen category is encountered during inference.
+### Most-Frequent Imputation
+
+`SimpleImputer(strategy="most_frequent")` replaces missing categorical values with the most frequently occurring category calculated from the training data.
+
+### One-Hot Encoding
+
+`OneHotEncoder` converts categorical variables into numerical indicator features.
+
+The configuration:
+
+```python
+handle_unknown="ignore"
+```
+
+allows the pipeline to handle categories that were not observed during training without raising an encoding error during inference.
 
 ---
 
-## 8. Random Forest Configuration
+## 8. Combined Preprocessing
+
+The numerical and categorical pipelines are combined using a `ColumnTransformer`:
+
+```python
+preprocessor = ColumnTransformer(
+    transformers=[
+        (
+            "numeric",
+            numeric_pipeline,
+            numeric_features
+        ),
+        (
+            "categorical",
+            categorical_pipeline,
+            categorical_features
+        )
+    ]
+)
+```
+
+The resulting preprocessing structure is:
+
+```text
+Input Features
+       │
+       ├─────────────────────┐
+       ▼                     ▼
+Numerical Features      Categorical Features
+       │                     │
+       ▼                     ▼
+Median Imputation      Most-Frequent Imputation
+       │                     │
+       ▼                     ▼
+StandardScaler         One-Hot Encoding
+       │                     │
+       └──────────┬──────────┘
+                  ▼
+       Combined Preprocessor
+```
+
+The notebook also displays a combined preprocessing summary showing:
+
+* Feature type
+* Imputation method
+* Transformation method
+* Unknown-category handling
+
+---
+
+## 9. Random Forest Configuration
 
 The Random Forest classifier is configured as follows:
 
@@ -262,60 +376,28 @@ random_forest = RandomForestClassifier(
     min_samples_split=5,
     min_samples_leaf=2,
     class_weight="balanced_subsample",
-    random_state=42,
+    random_state=RANDOM_STATE,
     n_jobs=-1
 )
 ```
 
 ### Parameter Description
 
-* **`n_estimators=300`** — uses 300 decision trees.
-* **`max_depth=12`** — limits the maximum depth of each tree.
-* **`min_samples_split=5`** — requires at least five observations for a node to be split.
-* **`min_samples_leaf=2`** — requires at least two observations in each terminal leaf.
-* **`class_weight="balanced_subsample"`** — adjusts class weighting for each bootstrap sample.
-* **`random_state=42`** — supports reproducibility.
-* **`n_jobs=-1`** — allows all available CPU cores to be used.
+* **`n_estimators=300`** — creates 300 decision trees in the Random Forest.
+* **`max_depth=12`** — limits the maximum depth of each decision tree.
+* **`min_samples_split=5`** — requires at least five samples in a node before it can be split.
+* **`min_samples_leaf=2`** — requires at least two samples in each terminal leaf.
+* **`class_weight="balanced_subsample"`** — adjusts class weights separately for each bootstrap sample.
+* **`random_state=42`** — supports reproducible model training.
+* **`n_jobs=-1`** — allows the model to use all available CPU cores.
 
 ---
 
-## 9. Complete Model Pipeline
+## 10. Complete Model Pipeline
 
-The preprocessing and Random Forest classifier are combined into one scikit-learn pipeline.
+The preprocessing and Random Forest classifier are combined into a single Scikit-learn `Pipeline`.
 
-```text
-Feature-Engineered Dataset
-        │
-        ▼
-Feature / Target Separation
-        │
-        ▼
-80/20 Stratified Split
-        │
-        ▼
-ColumnTransformer
-        │
-        ├───────────────┐
-        ▼               ▼
- Numerical          Categorical
- Features            Features
-        │               │
-        ▼               ▼
-Median Imputation  Most-Frequent
-        │           Imputation
-        ▼               │
-StandardScaler          ▼
-        │          One-Hot Encoding
-        └───────┬───────┘
-                ▼
-        Random Forest
-          Classifier
-                │
-                ▼
-          Trained Pipeline
-```
-
-The complete pipeline is created using:
+The implementation is:
 
 ```python
 model_pipeline = Pipeline(
@@ -332,13 +414,48 @@ model_pipeline = Pipeline(
 )
 ```
 
-This approach ensures that preprocessing is fitted using the training data and then consistently applied when predictions are generated.
+The complete modelling structure is:
+
+```text
+Feature-Engineered Dataset
+        │
+        ▼
+Feature / Target Separation
+        │
+        ▼
+80/20 Stratified Split
+        │
+        ▼
+ColumnTransformer
+        │
+        ├────────────────────┐
+        ▼                    ▼
+Numerical              Categorical
+Features               Features
+        │                    │
+        ▼                    ▼
+Median Imputation     Most-Frequent Imputation
+        │                    │
+        ▼                    ▼
+StandardScaler        One-Hot Encoding
+        │                    │
+        └──────────┬─────────┘
+                   ▼
+          Random Forest Classifier
+                   │
+                   ▼
+          Trained Model Pipeline
+```
+
+This structure ensures that preprocessing is fitted as part of the training pipeline and subsequently reused when predictions are generated.
+
+The complete pipeline is also the object saved to the Model 1 `.joblib` file.
 
 ---
 
-## 10. Model Training
+## 11. Model Training
 
-The complete pipeline is trained using:
+The complete modelling pipeline is trained using:
 
 ```python
 model_pipeline.fit(
@@ -352,37 +469,50 @@ The training process is:
 ```text
 X_train + y_train
         ↓
-Preprocessing
+Numerical / Categorical Preprocessing
         ↓
 Random Forest Training
         ↓
 Trained Model Pipeline
 ```
 
-The notebook confirms that training has completed before proceeding to inference.
+The notebook generates a training summary containing:
+
+* Model
+* Number of training rows
+* Number of training features
+* Training status
+
+The training status is reported as:
+
+```text
+COMPLETED
+```
 
 ---
 
-## 11. Inference
+## 12. Inference
 
 After training, predictions are generated using the unseen test dataset.
 
-### Class Prediction
+### 12.1 Class Prediction
 
 The predicted class is generated using:
 
 ```python
-y_pred = model_pipeline.predict(X_test)
+y_pred = model_pipeline.predict(
+    X_test
+)
 ```
 
-The output represents:
+The predicted classes represent:
 
 ```text
 0 = Not Returned
 1 = Returned
 ```
 
-### Return Probability
+### 12.2 Return Probability
 
 The probability of the `Returned` class is generated using:
 
@@ -393,11 +523,15 @@ y_probability = (
 )
 ```
 
-This probability is used for ROC-AUC evaluation.
+The `[:, 1]` selection retrieves the predicted probability associated with class `1`, representing the `Returned` class.
+
+These probabilities are subsequently used for ROC-AUC evaluation.
+
+The notebook creates a prediction summary confirming that both class predictions and return probabilities were generated for the test observations.
 
 ---
 
-## 12. Prediction Preview
+## 13. Prediction Preview
 
 The notebook creates a prediction preview containing:
 
@@ -409,13 +543,20 @@ Predicted Label
 Return Probability
 ```
 
-The first ten test-set predictions are displayed for inspection.
+The first ten test-set predictions are displayed.
 
-This allows the actual outcome, predicted outcome and estimated return probability to be examined together.
+The preview allows the actual outcome, predicted outcome and estimated return probability to be examined together.
+
+The labels are mapped as:
+
+```text
+0 → Not Returned
+1 → Returned
+```
 
 ---
 
-## 13. Model Evaluation
+## 14. Model Evaluation
 
 Model 1 is evaluated using:
 
@@ -424,36 +565,84 @@ Model 1 is evaluated using:
 * Recall
 * F1-Score
 * ROC-AUC
-* Confusion Matrix
 * Classification Report
+* Confusion Matrix
 
 ### Accuracy
 
-Measures the proportion of test observations classified correctly.
+Accuracy measures the proportion of test observations that were classified correctly.
+
+It is calculated using:
+
+```python
+accuracy_score(
+    y_test,
+    y_pred
+)
+```
 
 ### Precision
 
-Measures the proportion of observations predicted as `Returned` that were actually returned.
+Precision measures the proportion of observations predicted as `Returned` that were actually returned.
+
+It is calculated using:
+
+```python
+precision_score(
+    y_test,
+    y_pred,
+    zero_division=0
+)
+```
 
 ### Recall
 
-Measures the proportion of actually returned orders that were correctly identified.
+Recall measures the proportion of actually returned orders that were correctly identified.
+
+It is calculated using:
+
+```python
+recall_score(
+    y_test,
+    y_pred,
+    zero_division=0
+)
+```
 
 ### F1-Score
 
-Provides a combined measure of precision and recall.
+F1-Score combines precision and recall into a single metric.
+
+It is calculated using:
+
+```python
+f1_score(
+    y_test,
+    y_pred,
+    zero_division=0
+)
+```
 
 ### ROC-AUC
 
-Measures the model's ability to distinguish between returned and non-returned orders across classification thresholds.
+ROC-AUC evaluates the model's ability to distinguish between the two classes across classification thresholds.
 
-The ROC-AUC calculation uses the predicted return probabilities.
+The calculation uses the predicted return probabilities:
+
+```python
+roc_auc_score(
+    y_test,
+    y_probability
+)
+```
+
+The notebook presents the five primary metric values in a metrics table.
 
 ---
 
-## 14. Classification Report
+## 15. Classification Report
 
-The notebook generates a classification report containing:
+The notebook generates a Scikit-learn classification report containing:
 
 ```text
 Precision
@@ -477,42 +666,97 @@ Macro Average
 Weighted Average
 ```
 
+The classification report is converted into a Pandas DataFrame for display.
+
 ---
 
-## 15. Confusion Matrix
+## 16. Confusion Matrix
 
-A confusion matrix is generated to examine the classification results.
+A confusion matrix is generated using:
+
+```python
+cm = confusion_matrix(
+    y_test,
+    y_pred
+)
+```
+
+The confusion matrix uses the following class labels:
+
+```text
+Not Returned
+Returned
+```
 
 The four outcomes are:
 
-| Outcome        | Meaning                                      |
-| -------------- | -------------------------------------------- |
-| True Negative  | Correctly predicted Not Returned             |
-| False Positive | Predicted Returned but actually Not Returned |
-| False Negative | Predicted Not Returned but actually Returned |
-| True Positive  | Correctly predicted Returned                 |
+| Outcome        | Meaning                          |
+| -------------- | -------------------------------- |
+| True Negative  | Correctly predicted Not Returned |
+| False Positive | Incorrectly predicted Returned   |
+| False Negative | Missed a Returned order          |
+| True Positive  | Correctly predicted Returned     |
 
-The notebook generates a labelled confusion-matrix heatmap.
+The notebook generates a labelled heatmap using Seaborn.
 
-The saved visualisation is:
+The visualisation is titled:
+
+```text
+Confusion Matrix – STADIOalot Return Prediction
+```
+
+The generated image is saved to:
 
 ```text
 visualisations/model1_random_forest_confusion_matrix.png
 ```
 
+The image is saved at 300 DPI.
+
 ---
 
-## 16. Model Outputs
+## 17. Confusion Matrix Summary
 
-### Trained Model
+After calculating the confusion matrix, the notebook extracts:
 
-The complete preprocessing and Random Forest pipeline is saved to:
+```python
+tn, fp, fn, tp = cm.ravel()
+```
+
+A summary table is then created containing:
+
+* True Negatives
+* False Positives
+* False Negatives
+* True Positives
+
+The table also provides the meaning of each outcome.
+
+The notebook additionally verifies whether the confusion matrix image was successfully saved.
+
+---
+
+## 18. Model Outputs
+
+### 18.1 Trained Model
+
+The complete preprocessing and Random Forest pipeline is saved using `joblib` to:
 
 ```text
 models/model1_random_forest.joblib
 ```
 
-### Evaluation Metrics
+The saved object contains the complete modelling pipeline, including:
+
+```text
+Preprocessing
++
+Random Forest Classifier
+```
+
+This allows the same preprocessing steps to be applied when the saved model is later used for inference.
+
+### 18.2 Evaluation Metrics
 
 The evaluation metrics are saved to:
 
@@ -520,7 +764,7 @@ The evaluation metrics are saved to:
 experimental_results/model1_random_forest_metrics.csv
 ```
 
-The metrics file contains:
+The saved CSV contains the following fields:
 
 ```text
 model
@@ -531,9 +775,9 @@ f1_score
 roc_auc
 ```
 
-### Confusion Matrix
+### 18.3 Confusion Matrix
 
-The confusion matrix is saved to:
+The confusion matrix visualisation is saved to:
 
 ```text
 visualisations/model1_random_forest_confusion_matrix.png
@@ -541,11 +785,11 @@ visualisations/model1_random_forest_confusion_matrix.png
 
 ---
 
-## 17. How to Run Model 1
+## 19. How to Run Model 1
 
-Model 1 depends on the output produced by the previous notebooks.
+Model 1 depends on the outputs produced by the previous notebooks.
 
-Run the notebooks in this order:
+Run the notebooks in the following order:
 
 ```text
 01_Preprocessing.ipynb
@@ -603,33 +847,39 @@ Run the cells from top to bottom.
 
 The notebook will:
 
-1. Define the project paths.
-2. Load `returns_features.csv`.
-3. Validate `Return_Status`.
-4. Separate features and target.
-5. Create the 80/20 stratified split.
-6. Verify the target distribution.
-7. Identify numerical and categorical features.
-8. Configure numerical preprocessing.
-9. Configure categorical preprocessing.
-10. Combine the preprocessing pipelines.
-11. Configure the Random Forest classifier.
-12. Build the complete modelling pipeline.
-13. Train the model.
-14. Generate test-set predictions.
-15. Generate return probabilities.
-16. Display a prediction preview.
-17. Calculate evaluation metrics.
-18. Generate the classification report.
-19. Generate the confusion matrix.
-20. Save the evaluation metrics.
-21. Save the trained model.
-22. Perform final validation checks.
-23. Display the Model 1 completion summary.
+1. Define the project root and file paths.
+2. Create the required output directories.
+3. Display the path summary.
+4. Load `returns_features.csv`.
+5. Validate that `Return_Status` exists.
+6. Separate features and target.
+7. Create the 80/20 stratified train/test split.
+8. Display the split summary.
+9. Verify the target distribution across the split.
+10. Identify numerical features.
+11. Identify categorical features.
+12. Configure numerical preprocessing.
+13. Configure categorical preprocessing.
+14. Combine the preprocessing pipelines.
+15. Configure the Random Forest classifier.
+16. Build the complete modelling pipeline.
+17. Train the model.
+18. Generate test-set class predictions.
+19. Generate return probabilities.
+20. Display a prediction preview.
+21. Calculate evaluation metrics.
+22. Generate the classification report.
+23. Generate the confusion matrix.
+24. Generate the confusion matrix summary.
+25. Save the evaluation metrics.
+26. Save the trained model pipeline.
+27. Display the final model summary.
+28. Perform final validation checks.
+29. Display the Model 1 completion summary.
 
 ---
 
-## 18. Model 1 Notebook Outputs
+## 20. Model 1 Notebook Outputs
 
 Successful execution produces the following files:
 
@@ -644,7 +894,7 @@ visualisations/
 └── model1_random_forest_confusion_matrix.png
 ```
 
-The notebook also displays:
+The notebook also displays the following summaries and reports:
 
 ```text
 Path Summary
@@ -654,8 +904,8 @@ Split Target Report
 Feature Type Summary
 Numerical Features
 Categorical Features
-Numerical Preprocessing Summary
-Categorical Preprocessing Summary
+Numerical Preprocessing
+Categorical Preprocessing
 Combined Preprocessing Summary
 Model Configuration
 Pipeline Summary
@@ -666,19 +916,21 @@ Metrics Table
 Classification Report
 Confusion Matrix
 Confusion Matrix Summary
+Confusion Matrix Visualisation
+Metrics Save Report
 Model Save Report
 Final Model Summary
 Validation Checks
-Completion Summary
+Model 1 Completion Summary
 ```
 
 ---
 
-## 19. Final Validation
+## 21. Final Model Validation
 
-The notebook performs validation checks before completion.
+The notebook performs final validation checks before completion.
 
-The checks confirm that:
+The checks include:
 
 ```text
 Training completed
@@ -690,23 +942,28 @@ Metrics file saved
 Model file saved
 ```
 
-Each check is displayed with either:
+Each check produces a Boolean result and is converted into one of the following statuses:
 
 ```text
 PASS
-```
-
-or:
-
-```text
 CHECK
 ```
 
-This provides a final confirmation that the Model 1 training and output process completed successfully.
+The validation logic checks that:
+
+* The trained pipeline has completed fitting.
+* The number of predictions matches the number of test observations.
+* The number of prediction probabilities matches the number of test observations.
+* Accuracy has been calculated and is not `NaN`.
+* ROC-AUC has been calculated and is not `NaN`.
+* The metrics file exists.
+* The trained model file exists.
+
+The validation stage provides a final check that the Model 1 training, inference and output-saving process completed as expected.
 
 ---
 
-## 20. Model 1 Workflow
+## 22. Model 1 Workflow
 
 ```text
 returns_features.csv
@@ -723,49 +980,54 @@ Feature Type Identification
         ▼
 Preprocessing Pipeline
         │
-        ├───────────────────┐
-        ▼                   ▼
-    Numerical           Categorical
-        │                   │
-        ▼                   ▼
-Median Imputation   Most-Frequent Imputation
-        │                   │
-        ▼                   ▼
-StandardScaler      One-Hot Encoding
-        │                   │
-        └─────────┬─────────┘
-                  ▼
-        Random Forest Classifier
-                  │
-                  ▼
-           Model Training
-                  │
-                  ▼
-            Test Inference
-                  │
-          ┌───────┴────────┐
-          ▼                ▼
+        ├─────────────────────┐
+        ▼                     ▼
+    Numerical             Categorical
+     Features               Features
+        │                     │
+        ▼                     ▼
+Median Imputation       Most-Frequent Imputation
+        │                     │
+        ▼                     ▼
+StandardScaler          One-Hot Encoding
+        │                     │
+        └──────────┬──────────┘
+                   ▼
+          Random Forest Classifier
+                   │
+                   ▼
+             Model Training
+                   │
+                   ▼
+             Test Inference
+                   │
+          ┌────────┴────────┐
+          ▼                 ▼
    Class Prediction   Return Probability
-          │                │
-          └───────┬────────┘
-                  ▼
-         Performance Evaluation
-                  │
-       ┌──────────┼──────────┐
-       ▼          ▼          ▼
-    Metrics   Confusion   Classification
-               Matrix        Report
-                  │
-                  ▼
-          Saved Model Results
-          │              │
-          ▼              ▼
-     Metrics CSV     Model Pipeline
+          │                 │
+          └────────┬────────┘
+                   ▼
+          Performance Evaluation
+                   │
+       ┌───────────┼────────────┐
+       ▼           ▼            ▼
+    Metrics    Confusion    Classification
+                Matrix          Report
+       │
+       ▼
+  Saved Model Results
+       │
+       ├───────────────────┐
+       ▼                   ▼
+   Metrics CSV       Model Pipeline
+                           │
+                           ▼
+                 Confusion Matrix PNG
 ```
 
 ---
 
-## 21. Model 1 Summary
+## 23. Model 1 Summary
 
 | Component                     | Implementation                                             |
 | ----------------------------- | ---------------------------------------------------------- |
@@ -781,12 +1043,14 @@ StandardScaler      One-Hot Encoding
 | Numerical Scaling             | `StandardScaler`                                           |
 | Categorical Imputation        | Most Frequent                                              |
 | Categorical Encoding          | `OneHotEncoder`                                            |
+| Unknown Categories            | `handle_unknown="ignore"`                                  |
 | Number of Trees               | 300                                                        |
 | Maximum Depth                 | 12                                                         |
 | Minimum Samples Split         | 5                                                          |
 | Minimum Samples Leaf          | 2                                                          |
 | Class Weight                  | `balanced_subsample`                                       |
-| Evaluation                    | Accuracy, Precision, Recall, F1-Score, ROC-AUC             |
+| Number of Jobs                | -1                                                         |
+| Evaluation Metrics            | Accuracy, Precision, Recall, F1-Score, ROC-AUC             |
 | Additional Evaluation         | Classification Report, Confusion Matrix                    |
 | Model Output                  | `models/model1_random_forest.joblib`                       |
 | Metrics Output                | `experimental_results/model1_random_forest_metrics.csv`    |
@@ -794,7 +1058,7 @@ StandardScaler      One-Hot Encoding
 
 ---
 
-## 22. Relationship to the Project Workflow
+## 24. Relationship to the Project Workflow
 
 Model 1 is the third stage of the predictive modelling workflow:
 
@@ -817,11 +1081,14 @@ returns_features.csv
 03_Model1_RandomForest.ipynb
     │
     ▼
-Random Forest Model
+Random Forest Pipeline
     │
-    ├── Predictions
+    ├── Class Predictions
+    ├── Return Probabilities
     ├── Evaluation Metrics
     └── Confusion Matrix
 ```
 
-Model 1 therefore depends on the processed and feature-engineered outputs produced by the preceding notebooks.
+Model 1 therefore depends on the processed and feature-engineered output produced by the preceding notebooks.
+
+The resulting Random Forest pipeline, evaluation metrics and confusion matrix are saved as project outputs for subsequent analysis and comparison with Model 2.
