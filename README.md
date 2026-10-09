@@ -444,9 +444,17 @@ STADIOalot-Return-Prediction/
 │
 ├── data/
 │   ├── raw/
+│   |   ├── ClientData/
+│   |   |   ├── table1_orders_transactions.csv
+│   |   |   ├── table2_returns.csv
+│   |   |   ├── table3_product_catalogue.csv
+│   |   |   ├── table4_marketplace_sellers.csv
+│   |   |   ├── table5_customer_information.csv
+│   |   |   ├── table6_customer_behaviour.csv
+│   |   |   ├── table7_inventory_warehouse.csv
+│   |   |   └── table8_delivery_logistics.csv
 │   │   ├── ecommerce_returns_synthetic_data.csv
 │   │   └── README.md
-│   │
 │   └── processed/
 │       ├── returns_preprocessed.csv
 │       ├── returns_features.csv
