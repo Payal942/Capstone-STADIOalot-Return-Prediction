@@ -579,3 +579,88 @@ The statistical comparison uses:
 * McNemar's test with `alpha = 0.05`
 
 The required Python packages are specified in the project's `requirements.txt` file.
+
+
+---
+
+## Client Data Integration and Return Prediction
+
+This additional workflow applies the selected XGBoost return-prediction approach to the supplied STADIOalot client data. It complements the existing notebooks by integrating the client tables, preparing an order-level dataset, training the model and evaluating its performance.
+
+### 1. Client Data Sources
+
+The workflow uses eight CSV files stored in `data/raw/ClientData/`.
+
+| Table | File path | Description |
+|---|---|---|
+| Table 1 | `data/raw/ClientData/table1_orders_transactions.csv` | Orders and transaction information |
+| Table 2 | `data/raw/ClientData/table2_returns.csv` | Return records |
+| Table 3 | `data/raw/ClientData/table3_product_catalogue.csv` | Product catalogue information |
+| Table 4 | `data/raw/ClientData/table4_marketplace_sellers.csv` | Marketplace seller information |
+| Table 5 | `data/raw/ClientData/table5_customer_information.csv` | Customer information |
+| Table 6 | `data/raw/ClientData/table6_customer_behaviour.csv` | Customer behaviour information |
+| Table 7 | `data/raw/ClientData/table7_inventory_warehouse.csv` | Inventory and warehouse information |
+| Table 8 | `data/raw/ClientData/table8_delivery_logistics.csv` | Delivery and logistics information |
+
+### 2. Data Integration and Preparation
+
+The client-data workflow loads and inspects the eight tables before combining the relevant information into an integrated modelling dataset.
+
+The preparation process includes:
+
+- Inspecting data types, missing values, duplicate records and join keys.
+- Combining the tables using the relevant relationships between orders, returns, products, customers, sellers, inventory and delivery information.
+- Aggregating item-level information where necessary so that each order represents one prediction instance.
+- Preparing `Return_Status` as the binary target variable, where `0` represents an order that was not returned and `1` represents an order that was returned.
+- Handling missing values and categorical variables through the modelling preprocessing pipeline.
+- Excluding identifiers and information that would not be available at the intended prediction point to reduce the risk of data leakage.
+
+The objective is to predict whether an order will be returned using information available at or before order confirmation.
+
+### 3. Model Training and Evaluation
+
+The integrated client dataset is used to train and evaluate the selected XGBoost return-prediction model.
+
+The workflow uses a stratified 80/10/10 split for training, validation and testing. The test set is reserved for evaluating performance on unseen data.
+
+The evaluation includes:
+
+- Accuracy
+- Precision
+- Recall
+- F1-score
+- ROC-AUC
+- Classification report
+- Confusion matrix
+- ROC curve and relevant performance visualisations
+
+These metrics provide a broader assessment of the model's ability to identify returned orders and distinguish between returned and non-returned orders.
+
+### 4. Saved Models and Results
+
+The client-data workflow saves its model artefacts and evaluation results in the following locations:
+
+| Artifact | File path |
+|---|---|
+| Trained XGBoost model | `models/ss3_xgboost_return_prediction.joblib` |
+| Fitted preprocessing pipeline | `models/ss3_preprocessor.joblib` |
+| Model performance metrics | `experimental_results/ss3_xgboost_metrics.csv` |
+| Confusion matrix results | `experimental_results/ss3_xgboost_confusion_matrix.csv` |
+
+These artefacts support reproducibility and allow the trained model and its evaluation results to be reviewed after execution. The filenames should correspond to the paths specified in the actual notebook code.
+
+---
+
+### Execution Requirements
+
+Before running this workflow:
+
+1. Ensure that all eight client CSV files are available in `data/raw/ClientData/`.
+2. Install the project dependencies listed in `requirements.txt`.
+3. Run the relevant client-data notebooks in the required order.
+4. Confirm that the integrated dataset, trained model, metrics and visualisations are generated successfully.
+5. Verify that the saved artefacts are located in the documented `models/` and `experimental_results/` directories.
+
+**Note:** The existing notebooks and their documentation remain unchanged. This section documents the additional client-data workflow and its associated outputs.
+
+
