@@ -24,8 +24,9 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Model 2 Performance Evaluation](#model-2-performance-evaluation)
    - [Model Comparison](#model-comparison)
 8. [Client Recommendation](#client-recommendation)
-9. [Repository Structure](#repository-structure)
-10. [RAAIDD Log](#raaidd-log)
+9. [Client-Data Return Prediction Workflow](#client-data-return-prediction-workflow)
+10. [Repository Structure](#repository-structure)
+11. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
    - [Actions](#actions)
    - [Assumptions](#assumptions)
@@ -433,6 +434,120 @@ The complete client recommendation report is provided in: `docs/Client_Recommend
 [Client_Recommendation_Report.pdf](docs/Client_Recommendation_Report.pdf)
 
 ---
+---
+
+## Client-Data Return Prediction Workflow
+
+In addition to the original modelling and model-comparison workflow, the project includes a client-data workflow that applies the selected XGBoost classification approach to the eight supplied STADIOalot client datasets. The workflow integrates relevant order, return, product, seller, customer, behavioural, inventory and logistics information to create a modelling dataset for predicting whether an order will be returned. The objective is to evaluate the use of available client information for return-risk prediction while ensuring that predictive features are appropriate for the intended prediction point.
+
+### Client Data Sources
+
+The workflow uses the following eight source files located in `data/raw/ClientData/`:
+
+| File | Description |
+|---|---|
+| `table1_orders_transactions.csv` | Order and transaction information |
+| `table2_returns.csv` | Historical return information used to establish the target variable |
+| `table3_product_catalogue.csv` | Product attributes and catalogue information |
+| `table4_marketplace_sellers.csv` | Marketplace seller information |
+| `table5_customer_information.csv` | Customer characteristics and purchasing information |
+| `table6_customer_behaviour.csv` | Customer shopping and behavioural information |
+| `table7_inventory_warehouse.csv` | Inventory and warehouse information |
+| `table8_delivery_logistics.csv` | Delivery and logistics information |
+
+These datasets are integrated according to their relevant identifiers and relationships. Item-level information is aggregated where necessary to support an order-level prediction task.
+
+### Data Preprocessing
+
+The preprocessing stage prepares the integrated client data for modelling. It includes data inspection, data-type handling, missing-value treatment, relevant dataset integration and preparation of the modelling variables. The workflow also considers the prediction point when selecting features. Information that becomes available only after a return occurs, such as return dates, return reasons and refund details, must not be used as predictive features if it would not be available when the prediction is generated.
+
+**Notebook:**
+
+`notebooks/SS3_Python.ipynb`
+
+**Preprocessing output:**
+
+`data/processed/ss3_preprocessing_output.csv`
+
+The preprocessing output provides an intermediate dataset for subsequent model preparation and evaluation.
+
+### Target Variable
+
+The target variable is `Return_Status`, encoded as follows:
+
+| Value | Meaning |
+|---|---|
+| `0` | Not Returned |
+| `1` | Returned |
+
+The model aims to identify orders that are more likely to be returned using information available at or before the intended prediction point.
+
+### Model Training and Evaluation
+
+An XGBoost classifier is trained using the prepared client dataset. The modelling workflow uses a stratified 80/10/10 training, validation and test split to allocate observations for model fitting, validation and final evaluation.
+
+The evaluation includes the following classification metrics:
+
+- Accuracy
+- Precision
+- Recall
+- F1-score
+- ROC-AUC
+
+The workflow also records confusion-matrix results and training history to support performance assessment and documentation.
+
+### Saved Model Artefacts
+
+The trained model and fitted preprocessing component are saved separately so that they can be loaded and reused.
+
+| File | Purpose |
+|---|---|
+| `models/ss3_xgboost_return_prediction.joblib` | Stores the trained XGBoost return-prediction model |
+| `models/ss3_preprocessor.joblib` | Stores the fitted preprocessing component used to prepare model inputs |
+
+The fitted preprocessor and trained model must be used with the appropriate feature structure and transformations expected during training.
+
+### Client-Data Experimental Results
+
+The workflow generates the following CSV files in `experimental_results/`:
+
+| File | Purpose |
+|---|---|
+| `ss3_xgboost_metrics.csv` | Records the XGBoost classification evaluation metrics |
+| `ss3_xgboost_confusion_matrix.csv` | Records the confusion-matrix results |
+| `ss3_xgboost_training_history.csv` | Records the available model training-history information |
+
+These outputs provide a persistent record of model performance and training behaviour. They complement the existing Random Forest, XGBoost and statistical comparison results documented elsewhere in this repository.
+
+### Visualisations
+
+The modelling workflow generates five visualisations to support the interpretation of XGBoost training behaviour, model performance and classification results. These visualisations are stored in the `visualisations/` directory.
+
+| Visualisation | File | Description |
+|---|---|---|
+| Visualisation 1: Training and Validation Log Loss | `visualisation_1_training_validation_logloss.png` | Displays training and validation log loss across boosting iterations to assess learning progress and identify potential overfitting. |
+| Visualisation 2: Performance Across Data Splits | `visualisation_2_performance_splits.png` | Compares model performance across the training, validation and unseen test datasets using the evaluation metrics implemented in the notebook. |
+| Visualisation 3: Confusion Matrix | `visualisation_3_confusion_matrix.png` | Shows the numbers of correctly and incorrectly classified returned and non-returned orders on the evaluated dataset. |
+| Visualisation 4: Unseen-Test ROC Curve | `visualisation_4_test_roc.png` | Illustrates the model's ability to distinguish between returned and non-returned orders on the unseen test set at different classification thresholds. |
+| Visualisation 5: ROC Curves Across Data Splits | `visualisation_5_roc_splits.png` | Compares ROC curves across the training, validation and unseen test datasets to examine discrimination performance across the different data splits. |
+
+Together, these visualisations complement the saved evaluation metrics, confusion-matrix results and training-history data. They support the assessment of model learning, generalisation and classification performance.
+
+### Reproducibility
+
+To reproduce the client-data workflow:
+
+1. Ensure that the eight client CSV files are available in `data/raw/ClientData/`.
+2. Install the required Python dependencies using `experimental_setup/requirements.txt`.
+3. Open and execute `notebooks/SS3_Python.ipynb` in the required execution order.
+4. Confirm that the preprocessing output, trained model artefacts and experimental results are saved to their configured paths.
+5. Review the generated metrics and visualisations to assess model performance.
+
+Reproducibility depends on the availability of the input datasets, compatible dependencies, consistent preprocessing and the configuration used during model training.
+
+This workflow extends the project by applying the return-prediction approach to the supplied client data while preserving the existing model-development, performance-evaluation and statistical-comparison documentation.
+
+---
 
 ## Repository Structure
 
@@ -482,6 +597,9 @@ STADIOalot-Return-Prediction/
 │   ├── model_comparison_bootstrap_confidence_intervals.csv
 │   ├── model_metric_differences.csv
 │   ├── mcnemar_test.csv
+│   ├── ss3_xgboost_metrics.csv
+│   ├── ss3_xgboost_confusion_matrix.csv
+│   ├── ss3_xgboost_training_history.csv
 │   └── README.md
 │
 ├── experimental_setup/
@@ -492,6 +610,8 @@ STADIOalot-Return-Prediction/
 ├── models/
 │   ├── model1_random_forest.joblib
 │   ├── model2_xgboost.joblib
+│   ├── ss3_preprocessor.joblib
+│   ├── ss3_xgboost_return_prediction.joblib
 │   └── README.md
 │
 ├── notebooks/
@@ -502,8 +622,13 @@ STADIOalot-Return-Prediction/
 │   ├── 05_Model1Performance.ipynb
 │   ├── 06_Model2Performance.ipynb
 │   ├── 07_Comparison.ipynb
+│   ├── SS3_PartB.ipynb
 │   └── README.md
 │
+├──preprocessing_results/
+│   ├── ss3_preprocessing_output.csv
+│   └── README.md
+|
 ├── scripts/
 │   └── README.md
 │
@@ -513,6 +638,11 @@ STADIOalot-Return-Prediction/
 ├── visualisations/
 │   ├── model1_random_forest_confusion_matrix.png
 │   ├── model2_xgboost_confusion_matrix.png
+│   ├── visualisation_1_training_validation_logloss.png
+│   ├── visualisation_2_performance_splits.png
+│   ├── visualisation_3_confusion_matrix.png
+│   ├── visualisation_4_test_roc.png
+│   ├── visualisation_5_roc_splits.png
 │   └── README.md
 │
 ├── .gitignore
