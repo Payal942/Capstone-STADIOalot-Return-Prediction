@@ -107,3 +107,63 @@ The saved `.joblib` files are generated from the model-training notebooks:
 * `notebooks/04_Model2_XGBoost.ipynb`
 
 Running these notebooks with the required project dependencies and datasets will reproduce the model-training process and regenerate the saved model artefacts.
+
+
+
+---
+
+# Client-Data Model Artefacts
+
+The `SS3_Python.ipynb` notebook generates two additional model artefacts when training the XGBoost return-prediction model using the supplied STADIOalot client data.
+
+## Additional Model Files
+
+| File | Description |
+|---|---|
+| `ss3_xgboost_return_prediction.joblib` | The trained XGBoost classification model used to predict whether an order will be returned. |
+| `ss3_preprocessor.joblib` | The fitted preprocessing component used to transform the client data into the format expected by the trained model. |
+
+### 1. Trained XGBoost Model
+
+**File path:**
+
+```text
+models/ss3_xgboost_return_prediction.joblib
+```
+
+This file stores the trained XGBoost classifier developed using the integrated client dataset. It is intended to predict the `Return_Status` target variable:
+
+- `0` = Not Returned
+- `1` = Returned
+
+The model supports return-risk prediction using information available at or before the intended prediction point.
+
+### 2. Fitted Preprocessing Pipeline
+
+**File path:**
+
+```text
+models/ss3_preprocessor.joblib
+```
+
+This file stores the fitted preprocessing component used to prepare the client dataset for model input. Depending on the transformations defined in the notebook, this may include handling missing values and encoding categorical features.
+
+Saving the preprocessor separately allows the same fitted transformations to be reused when preparing new data for prediction, helping maintain consistency between training and inference.
+
+### Model Loading and Reuse
+
+The saved artefacts can be loaded using Joblib:
+
+```python
+import joblib
+
+model = joblib.load(
+    "models/ss3_xgboost_return_prediction.joblib"
+)
+
+preprocessor = joblib.load(
+    "models/ss3_preprocessor.joblib"
+)
+```
+
+The preprocessing component and trained model should be used with the same feature structure and transformations expected during training. The exact prediction workflow should follow the implementation in `SS3_Python.ipynb`.
