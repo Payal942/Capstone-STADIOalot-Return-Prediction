@@ -558,8 +558,8 @@ Each notebook is supported by documentation in the project's `docs/` folder.
 | `03_Model1_RandomForest.ipynb` | `docs/Model1.MD`             |
 | `04_Model2_XGBoost.ipynb`      | `docs/Model2.MD`             |
 | `05_Model1Performance.ipynb`   | `docs/Model1Performance.MD`  |
-| `06_Model2Performance.ipynb`      | `docs/Model2Performance.MD`  |
-| `07_Comparison.ipynb`        | `docs/Comparison.MD`         |
+| `06_Model2Performance.ipynb`   | `docs/Model2Performance.MD`  |
+| `07_Comparison.ipynb`          | `docs/Comparison.MD`         |
 
 The notebooks provide the executable implementation, while the Markdown documentation explains the methodology, inputs, outputs, evaluation procedures and results.
 
