@@ -643,6 +643,13 @@ STADIOalot-Return-Prediction/
 │   ├── visualisation_3_confusion_matrix.png
 │   ├── visualisation_4_test_roc.png
 │   ├── visualisation_5_roc_splits.png
+│   ├── visualisation_6_class_imbalance.png
+│   ├── visualisation_7_missing_values.png
+│   ├── visualisation_8_feature_importance.png
+│   ├── visualisation_9_performance_by_month.png
+│   ├── visualisation_10_target_leakage_analysis.png
+│   ├── visualisation_11a_leakage_vs_returns.png
+│   ├── visualisation_11b_model_performance_comparison.png
 │   └── README.md
 │
 ├── .gitignore
