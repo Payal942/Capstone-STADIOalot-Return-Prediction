@@ -578,7 +578,7 @@ This video presentation demonstrates how machine learning can be used to predict
 - **Institution:** STADIO Higher Education
 - **School:** School of IT
 
-**YouTube Video:** [https://youtu.be/vDcRIbDpAVA](https://youtu.be/vDcRIbDpAVA)&#x20;
+**YouTube Video:** [https://youtu.be/oA4Sub04Eeo](https://youtu.be/oA4Sub04Eeo)&#x20;
 
 > **Note:** The model is a baseline for further investigation and requires additional validation before operational deployment.
 
