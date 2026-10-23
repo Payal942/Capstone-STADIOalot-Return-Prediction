@@ -4,7 +4,7 @@ A Data Science capstone project focused on developing predictive demand forecast
 **Student Name:** Payal.S. Morar  
 **Student Number:** 23301266  
 **Institution:** School of Information Technology, STADIO Higher Education  
-**Due Date:** 28 September 2026  
+**Due Date:** 26 October 2026  
 
 ## Table of Contents
 
@@ -25,8 +25,9 @@ A Data Science capstone project focused on developing predictive demand forecast
    - [Model Comparison](#model-comparison)
 8. [Client Recommendation](#client-recommendation)
 9. [Client-Data Return Prediction Workflow](#client-data-return-prediction-workflow)
-10. [Repository Structure](#repository-structure)
-11. [RAAIDD Log](#raaidd-log)
+10. [Project Presentation](#project-presentation)
+11. [Repository Structure](#repository-structure)
+12. [RAAIDD Log](#raaidd-log)
    - [Risks](#risks)
    - [Actions](#actions)
    - [Assumptions](#assumptions)
@@ -521,17 +522,23 @@ These outputs provide a persistent record of model performance and training beha
 
 ### Visualisations
 
-The modelling workflow generates five visualisations to support the interpretation of XGBoost training behaviour, model performance and classification results. These visualisations are stored in the `visualisations/` directory.
+The modelling workflow generates 12 visualisations to support the assessment of data quality, class distribution, XGBoost training behaviour, feature importance, model performance, and potential target leakage. These visualisations are stored in the `visualisations/` directory.
 
 | Visualisation | File | Description |
 |---|---|---|
 | Visualisation 1: Training and Validation Log Loss | `visualisation_1_training_validation_logloss.png` | Displays training and validation log loss across boosting iterations to assess learning progress and identify potential overfitting. |
-| Visualisation 2: Performance Across Data Splits | `visualisation_2_performance_splits.png` | Compares model performance across the training, validation and unseen test datasets using the evaluation metrics implemented in the notebook. |
-| Visualisation 3: Confusion Matrix | `visualisation_3_confusion_matrix.png` | Shows the numbers of correctly and incorrectly classified returned and non-returned orders on the evaluated dataset. |
-| Visualisation 4: Unseen-Test ROC Curve | `visualisation_4_test_roc.png` | Illustrates the model's ability to distinguish between returned and non-returned orders on the unseen test set at different classification thresholds. |
-| Visualisation 5: ROC Curves Across Data Splits | `visualisation_5_roc_splits.png` | Compares ROC curves across the training, validation and unseen test datasets to examine discrimination performance across the different data splits. |
+| Visualisation 2: Performance Across Data Splits | `visualisation_2_performance_splits.png` | Compares model evaluation metrics across the training, validation and unseen-test datasets to assess consistency and generalisation. |
+| Visualisation 3: Unseen-Test Confusion Matrix | `visualisation_3_confusion_matrix.png` | Shows correct and incorrect classifications of returned and non-returned orders on the unseen-test dataset, including false positives and false negatives. |
+| Visualisation 4: Unseen-Test ROC Curve | `visualisation_4_test_roc.png` | Illustrates the model's ability to distinguish between returned and non-returned orders across different classification thresholds. |
+| Visualisation 5: ROC Curves Across Data Splits | `visualisation_5_roc_splits.png` | Compares ROC curves across the training, validation and unseen-test datasets to examine discrimination performance across the data splits. |
+| Visualisation 6: Return Class Imbalance | `visualisation_6_class_imbalance.png` | Displays the distribution of returned and non-returned orders to identify class imbalance and inform the interpretation of evaluation metrics. |
+| Visualisation 7: Missing Values Across Client Tables | `visualisation_7_missing_values.png` | Summarises missing-value patterns across the supplied client tables to support data-quality assessment and preprocessing decisions. |
+| Visualisation 8: XGBoost Feature Importance | `visualisation_8_feature_importance.png` | Identifies the features ranked highest by the fitted XGBoost model's selected feature-importance measure. |
+| Visualisation 9: Performance by Order Month | `visualisation_9_performance_by_month.png` | Examines model performance across order months to identify potential temporal variation in predictive performance. |
+| Visualisation 10: Target Leakage Analysis | `visualisation_10_target_leakage_analysis.png` | Examines return rates across delivery-related categories, including on-time status, delivery attempts and delivery timing, to investigate potential leakage risks. |
+| Visualisation 11A: Leakage Variables and Returns | `visualisation_11a_leakage_vs_returns.png` | Further investigates the relationship between delivery-related variables and return status, considering whether the variables are available at the intended prediction point. |
+| Visualisation 11B: Model Performance With vs Without Leakage | `visualisation_11b_model_performance_comparison.png` | Compares experimental XGBoost results for a baseline feature set and alternative feature sets containing individual or combined delivery-related variables, using ROC-AUC, PR-AUC, precision, recall and F1-score. |
 
-Together, these visualisations complement the saved evaluation metrics, confusion-matrix results and training-history data. They support the assessment of model learning, generalisation and classification performance.
 
 ### Reproducibility
 
@@ -546,6 +553,34 @@ To reproduce the client-data workflow:
 Reproducibility depends on the availability of the input datasets, compatible dependencies, consistent preprocessing and the configuration used during model training.
 
 This workflow extends the project by applying the return-prediction approach to the supplied client data while preserving the existing model-development, performance-evaluation and statistical-comparison documentation.
+
+---
+
+## Project Presentation
+
+**Title:** STADIOalot Order Return Prediction | CAP182 Capstone Project
+
+This video presentation demonstrates how machine learning can be used to predict the likelihood of e-commerce orders being returned, using information available at or before order confirmation.
+
+### Presentation Highlights
+
+- Business problem and project objectives
+- Client dataset and exploratory data analysis (EDA)
+- Data preprocessing and feature engineering
+- Class imbalance and data leakage considerations
+- XGBoost model development and evaluation
+- Business recommendations, limitations and future improvements
+
+### Video Details
+
+- **Presenter:** Payal S. Morar
+- **Module:** CAP182 – Capstone Project
+- **Institution:** STADIO Higher Education
+- **School:** School of IT
+
+**YouTube Video:** [https://youtu.be/vDcRIbDpAVA](https://youtu.be/vDcRIbDpAVA)&#x20;
+
+> **Note:** The model is a baseline for further investigation and requires additional validation before operational deployment.
 
 ---
 
