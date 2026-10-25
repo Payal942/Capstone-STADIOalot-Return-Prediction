@@ -571,13 +571,6 @@ This video presentation demonstrates how machine learning can be used to predict
 - XGBoost model development and evaluation
 - Business recommendations, limitations and future improvements
 
-### Video Details
-
-- **Presenter:** Payal S. Morar
-- **Module:** CAP182 – Capstone Project
-- **Institution:** STADIO Higher Education
-- **School:** School of IT
-
 **YouTube Video:** [https://youtu.be/oA4Sub04Eeo](https://youtu.be/oA4Sub04Eeo)&#x20;
 
 > **Note:** The model is a baseline for further investigation and requires additional validation before operational deployment.
