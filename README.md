@@ -468,7 +468,7 @@ The preprocessing stage prepares the integrated client data for modelling. It in
 
 **Preprocessing output:**
 
-`data/processed/ss3_preprocessing_output.csv`
+`preprocessing_results/ss3_preprocessing_output.csv`
 
 The preprocessing output provides an intermediate dataset for subsequent model preparation and evaluation.
 
